@@ -14,12 +14,20 @@ const fs = require("fs");
 // 数据库文件路径(放在 server/data 目录,便于备份与忽略)
 const DB_PATH = path.join(__dirname, "..", "..", "data", "db.json");
 
-// 默认数据结构:users 数组与 articles 数组
+// 默认数据结构:各业务集合及自增 ID 指针
 const DEFAULT_DATA = {
     users: [],
     articles: [],
+    books: [],
+    projects: [],
+    forum_topics: [],
+    forum_replies: [],
     nextUserId: 1,
     nextArticleId: 1,
+    nextBookId: 1,
+    nextProjectId: 1,
+    nextTopicId: 1,
+    nextReplyId: 1,
 };
 
 let state = null;
@@ -52,7 +60,12 @@ function initDb() {
         // 读取已有数据
         const raw = fs.readFileSync(DB_PATH, "utf-8");
         try {
-            state = JSON.parse(raw);
+            const parsed = JSON.parse(raw);
+            // 合并默认字段,保证旧库升级时新增集合/指针存在
+            state = Object.assign(
+                JSON.parse(JSON.stringify(DEFAULT_DATA)),
+                parsed
+            );
         } catch (err) {
             // 文件损坏:备份后重建
             console.error("[db] 数据库文件解析失败,重建中:", err.message);

@@ -9,6 +9,13 @@
     - [读书笔记](/articles/reading/notes.md)
     - [生活随笔](/articles/life/)
 
+- 作品展示
+  - [书籍](/books)
+  - [开源项目](/projects)
+  - [讨论区](/forum)
+
+- [GitHub 活跃](/github)
+
 - 项目作品
   - [OpenAlpha](/projects/openalpha/)
   - [个人博客系统](/projects/blog/)

@@ -1,12 +1,17 @@
 /**
  * BruceTang 个人作品集后端主应用
- * 基于 Express,提供认证与文章 API
+ * 基于 Express,提供认证、文章、书籍、项目、论坛 API
  * 监听端口由环境变量 PORT 指定,默认 4001
  *
  * 模块说明:
  * - 认证:POST /api/auth/register, POST /api/auth/login,
  *        POST /api/auth/logout, GET /api/auth/me
  * - 文章:GET/POST /api/articles, GET/PUT/DELETE /api/articles/:slug
+ * - 书籍:GET/POST /api/books, GET/PUT/DELETE /api/books/:slug
+ * - 项目:GET/POST /api/projects, GET/PUT/DELETE /api/projects/:slug
+ * - 论坛:GET/POST /api/forum/topics, GET /api/forum/topics/:slug,
+ *        POST /api/forum/topics/:slug/replies,
+ *        DELETE /api/forum/topics/:slug
  * - 监控:GET /api/health
  */
 const express = require("express");
@@ -14,6 +19,9 @@ const cors = require("cors");
 const { initDb } = require("./db");
 const authRoutes = require("./routes/auth");
 const articleRoutes = require("./routes/articles");
+const bookRoutes = require("./routes/books");
+const projectRoutes = require("./routes/projects");
+const forumRoutes = require("./routes/forum");
 
 const app = express();
 
@@ -35,6 +43,9 @@ app.get("/api/health", (req, res) => {
 // 业务路由
 app.use("/api/auth", authRoutes);
 app.use("/api/articles", articleRoutes);
+app.use("/api/books", bookRoutes);
+app.use("/api/projects", projectRoutes);
+app.use("/api/forum", forumRoutes);
 
 // 404 处理
 app.use((req, res) => {
