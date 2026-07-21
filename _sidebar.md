@@ -23,6 +23,9 @@
   - [OpenAlpha](/projects/openalpha/)
   - [个人博客系统](/projects/blog/)
 
+- [简历](/resume)
+- [时间线](/timeline)
+- [联系我](/contact)
 - [关于我](/about/)
 
 - 账号

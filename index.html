@@ -5,6 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BruceTang的作品集</title>
     <meta name="description" content="BruceTang的个人作品集 - 记录所学、所思、所做">
+    <meta name="author" content="BruceTang">
+    <!-- canonical：规范网址，避免重复内容影响 SEO -->
+    <link rel="canonical" href="https://brucetanghao.com/">
+    <!-- favicon：内联 SVG data URI，主题绿底 + BT 字母图标，不依赖外部资源 -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%2342b983'/><text x='32' y='45' font-family='Arial,Helvetica,sans-serif' font-size='38' font-weight='bold' text-anchor='middle' fill='%23ffffff'>BT</text></svg>">
+    <!-- 预连接 CDN：提前完成 DNS/TLS 握手，降低资源加载延迟 -->
+    <link rel="preconnect" href="//cdn.jsdelivr.net" crossorigin>
+    <!-- Open Graph：社交平台分享时的卡片信息 -->
+    <meta property="og:title" content="BruceTang的作品集">
+    <meta property="og:description" content="BruceTang的个人作品集 - 记录所学、所思、所做">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://brucetanghao.com/">
+    <meta property="og:image" content="https://github.com/HaoTang9878.png">
+    <meta property="og:site_name" content="BruceTang的作品集">
+    <meta property="og:locale" content="zh_CN">
+    <!-- Twitter Card：推特分享卡片 -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="BruceTang的作品集">
+    <meta name="twitter:description" content="BruceTang的个人作品集 - 记录所学、所思、所做">
+    <meta name="twitter:image" content="https://github.com/HaoTang9878.png">
     <!-- docsify 核心样式和脚本 -->
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify-sidebar-collapse@1/dist/sidebar.min.css">
@@ -165,6 +185,130 @@
             color: #333;
         }
 
+        /* ====== 阅读进度条：固定页面顶部，宽度随阅读进度变化 ====== */
+        .bt-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            width: 0%;
+            background: var(--bt-theme-color);
+            z-index: 300;
+            transition: width 0.1s ease-out;
+        }
+
+        /* ====== 回到顶部按钮：固定右下角，滚动超阈值后淡入 ====== */
+        .bt-backtop {
+            position: fixed;
+            right: 28px;
+            bottom: 32px;
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 50%;
+            background: var(--bt-theme-color);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(12px);
+            transition: opacity 0.3s ease, transform 0.3s ease,
+                        visibility 0.3s, box-shadow 0.2s ease;
+            z-index: 150;
+        }
+        .bt-backtop.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .bt-backtop:hover {
+            box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+        }
+        .bt-backtop svg {
+            width: 22px;
+            height: 22px;
+            fill: #fff;
+        }
+
+        /* ====== 加载动画：居中旋转圆环，docsify 渲染完成后隐藏 ====== */
+        .bt-loader {
+            position: fixed;
+            inset: 0;
+            z-index: 400;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bt-bg-gradient);
+            transition: opacity 0.4s ease;
+        }
+        .bt-loader.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .bt-loader-ring {
+            width: 48px;
+            height: 48px;
+            border: 4px solid rgba(0,0,0,0.1);
+            border-top-color: var(--bt-theme-color);
+            border-radius: 50%;
+            animation: bt-spin 0.8s linear infinite;
+        }
+        @keyframes bt-spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ====== 主题面板暗色模式适配 ====== */
+        body.bt-dark-mode .theme-panel {
+            background: #1a1a2e;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+        }
+        body.bt-dark-mode .theme-panel-title {
+            color: #9aa0b4;
+            border-bottom-color: #2a2a4a;
+        }
+        body.bt-dark-mode .theme-list li:hover {
+            background: rgba(255,255,255,0.08);
+        }
+        body.bt-dark-mode .theme-list li.active {
+            background: rgba(255,255,255,0.12);
+        }
+        body.bt-dark-mode .theme-name {
+            color: #e0e0e0;
+        }
+
+        /* ====== 用户状态条暗色适配 + GitHub 图标样式 ====== */
+        body.bt-dark-mode .user-nav .username {
+            color: #9aa0b4;
+        }
+        body.bt-dark-mode .bt-loader-ring {
+            border-color: rgba(255,255,255,0.12);
+            border-top-color: var(--bt-theme-color);
+        }
+        .user-nav a {
+            transition: opacity 0.2s ease;
+        }
+        .user-nav a:hover {
+            opacity: 0.75;
+        }
+        .user-nav .gh-link {
+            display: inline-flex;
+            align-items: center;
+            margin-left: 12px;
+            vertical-align: middle;
+        }
+        .user-nav .gh-link svg {
+            width: 18px;
+            height: 18px;
+            fill: var(--bt-theme-color);
+            transition: opacity 0.2s ease;
+        }
+        .user-nav .gh-link:hover svg {
+            opacity: 0.75;
+        }
+
         /* ====== 响应式设计：平板 ====== */
         @media (max-width: 1024px) {
             .markdown-section {
@@ -207,6 +351,12 @@
     </style>
 </head>
 <body>
+    <!-- 阅读进度条：固定最顶部，宽度随阅读进度变化 -->
+    <div class="bt-progress" id="bt-progress"></div>
+    <!-- 加载动画：居中旋转圆环，docsify 内容渲染完成后自动隐藏 -->
+    <div class="bt-loader" id="bt-loader">
+        <div class="bt-loader-ring"></div>
+    </div>
     <div id="app">加载中...</div>
     <!-- 顶部用户状态条(由 auth.js 动态渲染) -->
     <div class="user-nav" id="user-nav"></div>
@@ -246,15 +396,34 @@
             // 主题色（初始值，后续由主题选择器覆盖）
             themeColor: "#42b983",
             // 字体大小
-            fontSize: "15px"
+            fontSize: "15px",
+            // 找不到路由时展示的自定义 404 页面
+            notFoundPage: "404.md",
+            // 生命周期钩子：绑定滚动监听 + 隐藏加载动画
+            hooks: {
+                // docsify 挂载完成后初始化回到顶部/进度条的滚动监听
+                mounted: function () {
+                    if (typeof window.btInitScroll === "function") {
+                        window.btInitScroll();
+                    }
+                },
+                // 每次路由渲染完成后隐藏加载动画（首次与后续导航均触发）
+                doneEach: function () {
+                    var loader = document.getElementById("bt-loader");
+                    if (loader) loader.classList.add("hidden");
+                }
+            }
         };
     </script>
+    <!-- docsify 核心：同步加载，其余插件与语言包均依赖它先就绪 -->
     <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
-    <script src="//cdn.jsdelivr.net/npm/docsify-sidebar-collapse@1"></script>
-    <script src="//cdn.jsdelivr.net/npm/docsify-copy-code@2"></script>
-    <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
-    <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-python.min.js"></script>
-    <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-javascript.min.js"></script>
+    <!-- docsify 插件：defer 按文档顺序执行且不阻塞 HTML 解析 -->
+    <script defer src="//cdn.jsdelivr.net/npm/docsify-sidebar-collapse@1"></script>
+    <script defer src="//cdn.jsdelivr.net/npm/docsify-copy-code@2"></script>
+    <!-- PrismJS 语言包：async 并行下载，尽快注册语法高亮（docsify 已提供 Prism 全局） -->
+    <script async src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
+    <script async src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-python.min.js"></script>
+    <script async src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-javascript.min.js"></script>
     <!-- 主题选择器与持久化逻辑 -->
     <script>
         // 主题配置表：颜色 + 柔和背景渐变 + 暗色模式标志
@@ -377,6 +546,11 @@
     </script>
     <!-- 认证状态管理:根据 localStorage 渲染顶部用户入口 -->
     <script>
+        // GitHub 图标链接：固定展示，指向个人主页（内联 SVG，无外部依赖）
+        const BT_GH_ICON =
+            '<a class="gh-link" href="https://github.com/HaoTang9878" target="_blank" rel="noopener" title="GitHub 主页" aria-label="GitHub 主页">' +
+            '<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg></a>';
+
         // 渲染顶部用户状态(登录/未登录显示不同入口)
         function renderUserNav() {
             const navEl = document.getElementById("user-nav");
@@ -384,16 +558,30 @@
             const token = localStorage.getItem("brucetanghao_token");
             const userStr = localStorage.getItem("brucetanghao_user");
             if (token && userStr) {
-                // 已登录:显示用户名与登出
-                const user = JSON.parse(userStr);
+                // 已登录:显示用户名、登出与 GitHub 入口
+                let user = {};
+                try {
+                    user = JSON.parse(userStr) || {};
+                } catch (err) {
+                    // 用户数据损坏时清除并按未登录处理，避免页面白屏
+                    console.warn("用户数据解析失败:", err);
+                    localStorage.removeItem("brucetanghao_user");
+                    navEl.innerHTML =
+                        '<a href="#/login">登录</a>' +
+                        '<a href="#/register">注册</a>' +
+                        BT_GH_ICON;
+                    return;
+                }
                 navEl.innerHTML =
-                    '<span class="username">Hi, ' + (user.display_name || user.username) + "</span>" +
-                    '<a href="#/" onclick="logout()">登出</a>';
+                    '<span class="username">Hi, ' + (user.display_name || user.username || "用户") + "</span>" +
+                    '<a href="#/" onclick="logout()">登出</a>' +
+                    BT_GH_ICON;
             } else {
-                // 未登录:显示登录/注册入口
+                // 未登录:显示登录/注册入口与 GitHub 入口
                 navEl.innerHTML =
                     '<a href="#/login">登录</a>' +
-                    '<a href="#/register">注册</a>';
+                    '<a href="#/register">注册</a>' +
+                    BT_GH_ICON;
             }
         }
         // 登出:清除本地 token 并跳转首页
@@ -410,6 +598,89 @@
         // 初始渲染 + 定时刷新(捕获登录后状态变化)
         document.addEventListener("DOMContentLoaded", renderUserNav);
         setInterval(renderUserNav, 1000);
+    </script>
+    <!-- UX 增强：阅读进度条 + 回到顶部按钮（内联实现，不依赖外部库） -->
+    <script>
+        (function () {
+            "use strict";
+
+            // 回到顶部按钮出现的滚动阈值（单位：px）
+            var SCROLL_THRESHOLD = 300;
+
+            // 获取实际滚动容器：docsify 内容区优先，回退到文档根元素
+            function getScrollContainer() {
+                try {
+                    var content = document.querySelector(".content");
+                    if (content && content.scrollHeight > content.clientHeight) {
+                        return content;
+                    }
+                } catch (err) {
+                    // 查询失败时忽略，使用兜底容器
+                }
+                return document.scrollingElement || document.documentElement;
+            }
+
+            // 计算当前阅读进度（0~1），兼容内容区与窗口两种滚动模式
+            function calcProgress() {
+                var content = document.querySelector(".content");
+                var winTop = window.pageYOffset || document.documentElement.scrollTop || 0;
+                if (content && content.scrollHeight > content.clientHeight) {
+                    var max = content.scrollHeight - content.clientHeight;
+                    return max > 0 ? Math.min(content.scrollTop / max, 1) : 0;
+                }
+                var docMax = document.documentElement.scrollHeight - window.innerHeight;
+                return docMax > 0 ? Math.min(winTop / docMax, 1) : 0;
+            }
+
+            // 滚动回调：更新进度条宽度 + 控制回到顶部按钮显隐
+            function onScroll() {
+                var bar = document.getElementById("bt-progress");
+                if (bar) {
+                    bar.style.width = (calcProgress() * 100) + "%";
+                }
+                var container = getScrollContainer();
+                var top = (container && container.scrollTop) || window.pageYOffset || 0;
+                var btn = document.getElementById("bt-backtop");
+                if (!btn) return;
+                if (top > SCROLL_THRESHOLD) {
+                    btn.classList.add("show");
+                } else {
+                    btn.classList.remove("show");
+                }
+            }
+
+            // 平滑滚动到顶部，失败时回退到直接置顶
+            function scrollToTop() {
+                var container = getScrollContainer();
+                try {
+                    container.scrollTo({ top: 0, behavior: "smooth" });
+                } catch (err) {
+                    container.scrollTop = 0;
+                }
+            }
+
+            // 初始化滚动监听（由 docsify mounted 钩子触发）
+            function btInitScroll() {
+                try {
+                    var container = getScrollContainer();
+                    container.addEventListener("scroll", onScroll, { passive: true });
+                    // 兜底：监听窗口滚动（部分主题以 body 为滚动体）
+                    window.addEventListener("scroll", onScroll, { passive: true });
+                    onScroll();
+                } catch (err) {
+                    console.warn("滚动监听初始化失败:", err);
+                }
+            }
+
+            // 暴露给 docsify mounted 钩子调用
+            window.btInitScroll = btInitScroll;
+
+            // 绑定回到顶部按钮点击事件
+            document.addEventListener("DOMContentLoaded", function () {
+                var btn = document.getElementById("bt-backtop");
+                if (btn) btn.addEventListener("click", scrollToTop);
+            });
+        })();
     </script>
 </body>
 </html>

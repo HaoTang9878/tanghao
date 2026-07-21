@@ -1,6 +1,6 @@
 /**
  * BruceTang 个人作品集后端主应用
- * 基于 Express,提供认证、文章、书籍、项目、论坛 API
+ * 基于 Express,提供认证、文章、书籍、项目、论坛、标签、搜索、统计 API
  * 监听端口由环境变量 PORT 指定,默认 4001
  *
  * 模块说明:
@@ -12,6 +12,10 @@
  * - 论坛:GET/POST /api/forum/topics, GET /api/forum/topics/:slug,
  *        POST /api/forum/topics/:slug/replies,
  *        DELETE /api/forum/topics/:slug
+ * - 标签:GET /api/tags, GET /api/tags/:tag/articles,
+ *        GET /api/tags/:tag/projects
+ * - 搜索:GET /api/search?q=关键词
+ * - 统计:GET /api/stats
  * - 监控:GET /api/health
  */
 const express = require("express");
@@ -22,6 +26,9 @@ const articleRoutes = require("./routes/articles");
 const bookRoutes = require("./routes/books");
 const projectRoutes = require("./routes/projects");
 const forumRoutes = require("./routes/forum");
+const tagRoutes = require("./routes/tags");
+const searchRoutes = require("./routes/search");
+const statsRoutes = require("./routes/stats");
 
 const app = express();
 
@@ -46,6 +53,9 @@ app.use("/api/articles", articleRoutes);
 app.use("/api/books", bookRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/forum", forumRoutes);
+app.use("/api/tags", tagRoutes);
+app.use("/api/search", searchRoutes);
+app.use("/api/stats", statsRoutes);
 
 // 404 处理
 app.use((req, res) => {

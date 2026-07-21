@@ -15,6 +15,7 @@ const fs = require("fs");
 const DB_PATH = path.join(__dirname, "..", "..", "data", "db.json");
 
 // 默认数据结构:各业务集合及自增 ID 指针
+// articles 每条记录含 tags 字段(字符串数组),旧数据无该字段时读取时补为 []
 const DEFAULT_DATA = {
     users: [],
     articles: [],
@@ -31,6 +32,23 @@ const DEFAULT_DATA = {
 };
 
 let state = null;
+
+/**
+ * 旧数据兼容:确保每篇文章都含有 tags 字段
+ * 早期文章结构不含 tags,读取时统一补为空数组,避免后续逻辑报错
+ * @param {Object} data - 数据库状态对象
+ */
+function normalizeArticles(data) {
+    if (!Array.isArray(data.articles)) {
+        return;
+    }
+    data.articles.forEach((article) => {
+        if (!Array.isArray(article.tags)) {
+            article.tags = [];
+        }
+    });
+}
+
 // 测试模式标志:测试时使用内存,避免磁盘 IO 影响测试隔离
 let useMemory = false;
 
@@ -47,6 +65,8 @@ function initDb() {
     if (useMemory) {
         // 内存模式:用于单元测试,每次都是干净的数据
         state = JSON.parse(JSON.stringify(DEFAULT_DATA));
+        // 旧数据兼容:补全文章的 tags 字段
+        normalizeArticles(state);
         return state;
     }
 
@@ -78,6 +98,8 @@ function initDb() {
         state = JSON.parse(JSON.stringify(DEFAULT_DATA));
         writeDb();
     }
+    // 旧数据兼容:补全文章的 tags 字段
+    normalizeArticles(state);
     return state;
 }
 
