@@ -1,6 +1,6 @@
 # 关于我
 
-你好，我是唐昊（brucetanghao）。
+你好，我是BruceTang（brucetanghao）。
 
 ## 简介
 
