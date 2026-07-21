@@ -309,6 +309,104 @@
             opacity: 0.75;
         }
 
+        /* ====== 文章阅读时间：标题下方灰色小字 ====== */
+        .bt-reading-time {
+            font-size: 13px;
+            color: #999;
+            margin: -8px 0 16px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .bt-reading-time svg {
+            width: 14px;
+            height: 14px;
+            fill: #999;
+        }
+        body.bt-dark-mode .bt-reading-time {
+            color: #888;
+        }
+        body.bt-dark-mode .bt-reading-time svg {
+            fill: #888;
+        }
+
+        /* ====== 社交分享按钮：浮动在文章右侧 ====== */
+        .bt-share {
+            position: fixed;
+            right: 28px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 120;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .bt-share.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .bt-share-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease,
+                        background 0.2s ease;
+        }
+        .bt-share-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .bt-share-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+        /* Twitter/X 图标颜色 */
+        .bt-share-twitter svg {
+            fill: #1da1f2;
+        }
+        /* LinkedIn 图标颜色 */
+        .bt-share-linkedin svg {
+            fill: #0077b5;
+        }
+        /* 复制链接按钮使用主题色 */
+        .bt-share-copy svg {
+            fill: var(--bt-theme-color);
+        }
+        /* 复制成功反馈提示 */
+        .bt-share-tip {
+            position: absolute;
+            right: 52px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--bt-theme-color);
+            color: #fff;
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 4px;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        .bt-share-tip.show {
+            opacity: 1;
+        }
+        /* 暗色模式适配：按钮背景改为深色 */
+        body.bt-dark-mode .bt-share-btn {
+            background: #1a1a2e;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+        }
+
         /* ====== 响应式设计：平板 ====== */
         @media (max-width: 1024px) {
             .markdown-section {
@@ -347,6 +445,75 @@
             .sidebar-toggle {
                 display: block !important;
             }
+            /* 移动端隐藏浮动分享按钮，避免遮挡内容 */
+            .bt-share {
+                display: none !important;
+            }
+        }
+
+        /* ====== 打印友好样式：隐藏导航元素，内容全宽 ====== */
+        @media print {
+            /* 隐藏侧边栏、主题选择器、用户状态条、回到顶部、进度条、分享按钮、加载动画 */
+            .sidebar,
+            .sidebar-toggle,
+            .theme-picker,
+            .user-nav,
+            .bt-backtop,
+            .bt-progress,
+            .bt-share,
+            .bt-loader {
+                display: none !important;
+            }
+            /* 内容区全宽显示，去除最大宽度限制 */
+            .content,
+            .markdown-section {
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            /* 字体改为黑色，背景纯白 */
+            body {
+                background: #fff !important;
+                color: #000 !important;
+            }
+            .content,
+            .markdown-section {
+                background: #fff !important;
+                color: #000 !important;
+            }
+            /* 标题与正文统一黑色 */
+            .content h1,
+            .content h2,
+            .content h3,
+            .content h4,
+            .content h5,
+            .content h6,
+            .content p,
+            .content li,
+            .content td,
+            .content th,
+            .content blockquote {
+                color: #000 !important;
+            }
+            /* 链接显示 URL，方便打印后查阅 */
+            .content a::after {
+                content: " (" attr(href) ")";
+                font-size: 90%;
+                color: #555;
+            }
+            /* 代码块保留边框但去掉背景色 */
+            .content pre {
+                border: 1px solid #ccc !important;
+                background: transparent !important;
+                color: #000 !important;
+            }
+            .content code {
+                background: transparent !important;
+                color: #000 !important;
+            }
+            .content pre code {
+                color: #000 !important;
+            }
         }
     </style>
 </head>
@@ -373,6 +540,220 @@
             <ul class="theme-list" id="theme-list"></ul>
         </div>
     </div>
+    <!-- 社交分享按钮：浮动在文章右侧（由 JS 在文章页动态显示） -->
+    <div class="bt-share" id="bt-share">
+        <span class="bt-share-tip" id="bt-share-tip">已复制链接</span>
+        <a class="bt-share-btn bt-share-twitter" id="bt-share-twitter" target="_blank" rel="noopener" title="分享到 Twitter/X" aria-label="分享到 Twitter/X">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.98 8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z"/></svg>
+        </a>
+        <a class="bt-share-btn bt-share-linkedin" id="bt-share-linkedin" target="_blank" rel="noopener" title="分享到 LinkedIn" aria-label="分享到 LinkedIn">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+        </a>
+        <button class="bt-share-btn bt-share-copy" id="bt-share-copy" title="复制链接" aria-label="复制链接">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+        </button>
+    </div>
+    <!-- 文章增强：阅读时间估算 + 社交分享按钮（内联实现，不依赖外部库） -->
+    <script>
+        (function () {
+            "use strict";
+
+            // 中文阅读速度：每分钟 300 字
+            var READ_SPEED = 300;
+
+            /**
+             * 判断当前页面是否为文章页（articles/ 路径下）
+             * docsify 使用 hash 路由，格式为 #/articles/programming/notes
+             * @returns {boolean} 是否为文章页
+             */
+            function isArticlePage() {
+                try {
+                    var hash = location.hash || "";
+                    return hash.indexOf("#/articles/") !== -1;
+                } catch (err) {
+                    return false;
+                }
+            }
+
+            /**
+             * 获取当前页面的完整 URL（去掉 hash 中的 #，拼接为正常路径）
+             * docsify 的 hash 路由需要转换为可分享的标准 URL
+             * @returns {string} 当前页面完整 URL
+             */
+            function getCurrentUrl() {
+                try {
+                    var hash = location.hash || "";
+                    // 将 #/path 转换为 /path，生成可访问的 URL
+                    var path = hash.replace(/^#/, "");
+                    return location.origin + location.pathname + path;
+                } catch (err) {
+                    return location.href;
+                }
+            }
+
+            /**
+             * 获取当前文章标题（取第一个 h1 文本）
+             * @returns {string} 文章标题
+             */
+            function getArticleTitle() {
+                try {
+                    var h1 = document.querySelector(".markdown-section h1");
+                    return h1 ? (h1.textContent || "").trim() : document.title;
+                } catch (err) {
+                    return document.title;
+                }
+            }
+
+            /**
+             * 计算并渲染阅读时间：统计正文文字数，按每分钟 300 字估算
+             * 在文章第一个 h1 标题下方插入"约 X 分钟阅读"
+             */
+            function renderReadingTime() {
+                // 先移除旧的阅读时间元素，避免重复
+                var old = document.querySelector(".bt-reading-time");
+                if (old) old.remove();
+
+                try {
+                    var section = document.querySelector(".markdown-section");
+                    if (!section) return;
+
+                    // 统计正文文字数（去除代码块，避免代码干扰字数统计）
+                    var clone = section.cloneNode(true);
+                    var codeBlocks = clone.querySelectorAll("pre");
+                    codeBlocks.forEach(function (el) { el.remove(); });
+                    var text = (clone.textContent || "").replace(/\s+/g, "");
+                    var wordCount = text.length;
+
+                    // 字数过少（如目录页）则不显示
+                    if (wordCount < 50) return;
+
+                    var minutes = Math.ceil(wordCount / READ_SPEED);
+
+                    // 时钟图标 SVG（内联，无外部依赖）
+                    var svg = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">'
+                        + '<path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z"/></svg>';
+
+                    var el = document.createElement("div");
+                    el.className = "bt-reading-time";
+                    el.innerHTML = svg + "<span>约 " + minutes + " 分钟阅读</span>";
+
+                    // 插入到第一个 h1 标题之后
+                    var h1 = section.querySelector("h1");
+                    if (h1 && h1.nextSibling) {
+                        section.insertBefore(el, h1.nextSibling);
+                    } else if (h1) {
+                        h1.appendChild(el);
+                    } else {
+                        section.insertBefore(el, section.firstChild);
+                    }
+                } catch (err) {
+                    console.warn("阅读时间计算失败:", err);
+                }
+            }
+
+            /**
+             * 渲染社交分享按钮：设置 Twitter/LinkedIn 分享链接，绑定复制链接事件
+             * 仅在文章页显示，非文章页隐藏
+             */
+            function renderShareButtons() {
+                var shareEl = document.getElementById("bt-share");
+                if (!shareEl) return;
+
+                try {
+                    if (!isArticlePage()) {
+                        shareEl.classList.remove("show");
+                        return;
+                    }
+
+                    var url = encodeURIComponent(getCurrentUrl());
+                    var title = encodeURIComponent(getArticleTitle());
+
+                    // 设置 Twitter/X 分享链接
+                    var twitterBtn = document.getElementById("bt-share-twitter");
+                    if (twitterBtn) {
+                        twitterBtn.href = "https://twitter.com/intent/tweet?text=" + title + "&url=" + url;
+                    }
+
+                    // 设置 LinkedIn 分享链接
+                    var linkedinBtn = document.getElementById("bt-share-linkedin");
+                    if (linkedinBtn) {
+                        linkedinBtn.href = "https://www.linkedin.com/sharing/share-offsite/?url=" + url;
+                    }
+
+                    shareEl.classList.add("show");
+                } catch (err) {
+                    console.warn("分享按钮渲染失败:", err);
+                    shareEl.classList.remove("show");
+                }
+            }
+
+            /**
+             * 复制当前页面链接到剪贴板
+             * 优先使用 navigator.clipboard API，降级到 execCommand
+             */
+            function copyLink() {
+                var url = getCurrentUrl();
+                var tip = document.getElementById("bt-share-tip");
+
+                try {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(url).then(function () {
+                            showCopyTip(tip);
+                        }).catch(function () {
+                            fallbackCopy(url, tip);
+                        });
+                    } else {
+                        fallbackCopy(url, tip);
+                    }
+                } catch (err) {
+                    fallbackCopy(url, tip);
+                }
+            }
+
+            /**
+             * 降级复制方案：使用临时 textarea + execCommand
+             * @param {string} url - 待复制的 URL
+             * @param {Element} tip - 复制成功提示元素
+             */
+            function fallbackCopy(url, tip) {
+                try {
+                    var textarea = document.createElement("textarea");
+                    textarea.value = url;
+                    textarea.style.position = "fixed";
+                    textarea.style.opacity = "0";
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand("copy");
+                    document.body.removeChild(textarea);
+                    showCopyTip(tip);
+                } catch (err) {
+                    console.warn("复制链接失败:", err);
+                }
+            }
+
+            /**
+             * 显示"已复制链接"提示，2 秒后自动消失
+             * @param {Element} tip - 提示元素
+             */
+            function showCopyTip(tip) {
+                if (!tip) return;
+                tip.classList.add("show");
+                setTimeout(function () {
+                    tip.classList.remove("show");
+                }, 2000);
+            }
+
+            // 绑定复制链接按钮点击事件
+            document.addEventListener("DOMContentLoaded", function () {
+                var copyBtn = document.getElementById("bt-share-copy");
+                if (copyBtn) copyBtn.addEventListener("click", copyLink);
+            });
+
+            // 暴露给 docsify doneEach 钩子调用
+            window.btRenderReadingTime = renderReadingTime;
+            window.btRenderShareButtons = renderShareButtons;
+        })();
+    </script>
     <script>
         window.$docsify = {
             // 网站名称（显示在侧边栏顶部）
@@ -407,10 +788,18 @@
                         window.btInitScroll();
                     }
                 },
-                // 每次路由渲染完成后隐藏加载动画（首次与后续导航均触发）
+                // 每次路由渲染完成后隐藏加载动画 + 渲染阅读时间与分享按钮
                 doneEach: function () {
                     var loader = document.getElementById("bt-loader");
                     if (loader) loader.classList.add("hidden");
+                    // 渲染文章阅读时间（仅 articles/ 路径下显示）
+                    if (typeof window.btRenderReadingTime === "function") {
+                        window.btRenderReadingTime();
+                    }
+                    // 渲染社交分享按钮（仅 articles/ 路径下显示）
+                    if (typeof window.btRenderShareButtons === "function") {
+                        window.btRenderShareButtons();
+                    }
                 }
             }
         };

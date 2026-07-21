@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- RSS 2.0 订阅源：发布最新文章，供阅读器订阅 -->
+<rss version="2.0">
+    <channel>
+        <title>BruceTang的作品集</title>
+        <link>https://brucetanghao.com</link>
+        <description>个人作品集</description>
+        <language>zh-CN</language>
+        <lastBuildDate>Wed, 22 Jul 2026 00:00:00 +0800</lastBuildDate>
+        <item>
+            <title>编程学习笔记</title>
+            <link>https://brucetanghao.com/articles/programming/notes</link>
+            <description>收录编程学习过程中的详细笔记，涵盖 TypeScript 类型系统、Python 异步编程与 Git 高级用法。</description>
+            <pubDate>Wed, 22 Jul 2026 00:00:00 +0800</pubDate>
+            <guid>https://brucetanghao.com/articles/programming/notes</guid>
+        </item>
+        <item>
+            <title>服务器运维手记</title>
+            <link>https://brucetanghao.com/articles/ops/</link>
+            <description>记录服务器运维实战经验，涵盖 Linux 安全加固、Nginx 反向代理、Docker 容器化部署与故障排查。</description>
+            <pubDate>Wed, 22 Jul 2026 00:00:00 +0800</pubDate>
+            <guid>https://brucetanghao.com/articles/ops/</guid>
+        </item>
+        <item>
+            <title>数据库实践笔记</title>
+            <link>https://brucetanghao.com/articles/database/</link>
+            <description>整理数据库学习笔记与实践经验，涵盖 MySQL、PostgreSQL、Redis 以及数据库设计原则。</description>
+            <pubDate>Wed, 22 Jul 2026 00:00:00 +0800</pubDate>
+            <guid>https://brucetanghao.com/articles/database/</guid>
+        </item>
+        <item>
+            <title>读书笔记</title>
+            <link>https://brucetanghao.com/articles/reading/notes</link>
+            <description>三本技术经典的读书笔记与读后感：《重构》《代码整洁之道》《深入理解计算机系统》。</description>
+            <pubDate>Wed, 22 Jul 2026 00:00:00 +0800</pubDate>
+            <guid>https://brucetanghao.com/articles/reading/notes</guid>
+        </item>
+        <item>
+            <title>生活随笔</title>
+            <link>https://brucetanghao.com/articles/life/</link>
+            <description>日常生活的点滴记录，关于坚持、专注与生活节奏的感悟与思考。</description>
+            <pubDate>Wed, 22 Jul 2026 00:00:00 +0800</pubDate>
+            <guid>https://brucetanghao.com/articles/life/</guid>
+        </item>
+    </channel>
+</rss>

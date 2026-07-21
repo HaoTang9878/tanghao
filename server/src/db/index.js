@@ -16,6 +16,7 @@ const DB_PATH = path.join(__dirname, "..", "..", "data", "db.json");
 
 // 默认数据结构:各业务集合及自增 ID 指针
 // articles 每条记录含 tags 字段(字符串数组),旧数据无该字段时读取时补为 []
+// article_likes 记录点赞 IP,用于防重复点赞限流
 const DEFAULT_DATA = {
     users: [],
     articles: [],
@@ -23,19 +24,21 @@ const DEFAULT_DATA = {
     projects: [],
     forum_topics: [],
     forum_replies: [],
+    article_likes: [],
     nextUserId: 1,
     nextArticleId: 1,
     nextBookId: 1,
     nextProjectId: 1,
     nextTopicId: 1,
     nextReplyId: 1,
+    nextArticleLikeId: 1,
 };
 
 let state = null;
 
 /**
- * 旧数据兼容:确保每篇文章都含有 tags 字段
- * 早期文章结构不含 tags,读取时统一补为空数组,避免后续逻辑报错
+ * 旧数据兼容:确保每篇文章都含有 tags、views、likes 字段
+ * 早期文章结构不含这些字段,读取时统一补全,避免后续逻辑报错
  * @param {Object} data - 数据库状态对象
  */
 function normalizeArticles(data) {
@@ -45,6 +48,12 @@ function normalizeArticles(data) {
     data.articles.forEach((article) => {
         if (!Array.isArray(article.tags)) {
             article.tags = [];
+        }
+        if (typeof article.views !== "number") {
+            article.views = 0;
+        }
+        if (typeof article.likes !== "number") {
+            article.likes = 0;
         }
     });
 }
