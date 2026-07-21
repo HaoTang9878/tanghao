@@ -14,3 +14,7 @@
   - [个人博客系统](/projects/blog/)
 
 - [关于我](/about/)
+
+- 账号
+  - [登录](/login)
+  - [注册](/register)
