@@ -8,9 +8,34 @@
     <!-- docsify 核心样式和脚本 -->
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify-sidebar-collapse@1/dist/sidebar.min.css">
+    <!-- 自定义认证模块样式 -->
+    <style>
+        /* 顶部右侧用户状态条 */
+        .user-nav {
+            position: fixed;
+            top: 16px;
+            right: 24px;
+            z-index: 100;
+            font-size: 14px;
+        }
+        .user-nav a {
+            color: #42b983;
+            text-decoration: none;
+            margin-left: 12px;
+        }
+        .user-nav a:hover {
+            text-decoration: underline;
+        }
+        .user-nav .username {
+            color: #6c757d;
+            margin-right: 8px;
+        }
+    </style>
 </head>
 <body>
     <div id="app">加载中...</div>
+    <!-- 顶部用户状态条(由 auth.js 动态渲染) -->
+    <div class="user-nav" id="user-nav"></div>
     <script>
         window.$docsify = {
             // 网站名称（显示在侧边栏顶部）
@@ -43,5 +68,41 @@
     <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-python.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-javascript.min.js"></script>
+    <!-- 认证状态管理:根据 localStorage 渲染顶部用户入口 -->
+    <script>
+        // 渲染顶部用户状态(登录/未登录显示不同入口)
+        function renderUserNav() {
+            const navEl = document.getElementById("user-nav");
+            if (!navEl) return;
+            const token = localStorage.getItem("brucetanghao_token");
+            const userStr = localStorage.getItem("brucetanghao_user");
+            if (token && userStr) {
+                // 已登录:显示用户名与登出
+                const user = JSON.parse(userStr);
+                navEl.innerHTML =
+                    '<span class="username">Hi, ' + (user.display_name || user.username) + "</span>" +
+                    '<a href="#/" onclick="logout()">登出</a>';
+            } else {
+                // 未登录:显示登录/注册入口
+                navEl.innerHTML =
+                    '<a href="#/login">登录</a>' +
+                    '<a href="#/register">注册</a>';
+            }
+        }
+        // 登出:清除本地 token 并跳转首页
+        function logout() {
+            // JWT 无状态:前端清除 token 即完成登出
+            localStorage.removeItem("brucetanghao_token");
+            localStorage.removeItem("brucetanghao_user");
+            location.href = "#/";
+        }
+        // 路由变化时重新渲染顶部状态
+        if (window.$docsify) {
+            const origHook = window.$docsify.hooks;
+        }
+        // 初始渲染 + 定时刷新(捕获登录后状态变化)
+        document.addEventListener("DOMContentLoaded", renderUserNav);
+        setInterval(renderUserNav, 1000);
+    </script>
 </body>
 </html>
