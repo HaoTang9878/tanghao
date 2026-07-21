@@ -10,8 +10,11 @@
     - [生活随笔](/articles/life/)
 
 - 作品展示
-  - [书籍](/books)
   - [开源项目](/projects)
+    - [原创项目](/projects?id=原创项目)
+    - [学术研究](/projects?id=学术研究)
+    - [AI与量化](/projects?id=ai与量化)
+  - [书籍](/books)
   - [讨论区](/forum)
 
 - [GitHub 活跃](/github)
