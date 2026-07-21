@@ -14,11 +14,51 @@
         :root {
             --bt-theme-color: #42b983;
             --bt-bg-gradient: linear-gradient(135deg, #f0f9f4 0%, #e3f5eb 100%);
+            --bt-text-color: #34495e;
+            --bt-sidebar-bg: #fff;
+            --bt-content-bg: #fff;
+            --bt-border-color: #eee;
         }
         /* 应用主题渐变背景到 body */
         body {
             background: var(--bt-bg-gradient);
-            transition: background 0.4s ease;
+            transition: background 0.4s ease, color 0.4s ease;
+            color: var(--bt-text-color);
+        }
+        /* 暗色模式：覆盖 docsify 内容区、侧边栏、代码块的背景与字体 */
+        body.bt-dark-mode .sidebar {
+            background: var(--bt-sidebar-bg) !important;
+            color: var(--bt-text-color) !important;
+        }
+        body.bt-dark-mode .sidebar a,
+        body.bt-dark-mode .sidebar h2,
+        body.bt-dark-mode .sidebar p {
+            color: var(--bt-text-color) !important;
+        }
+        body.bt-dark-mode .content {
+            background: var(--bt-content-bg) !important;
+            color: var(--bt-text-color) !important;
+        }
+        body.bt-dark-mode .content h1,
+        body.bt-dark-mode .content h2,
+        body.bt-dark-mode .content h3,
+        body.bt-dark-mode .content p,
+        body.bt-dark-mode .content li,
+        body.bt-dark-mode .content td,
+        body.bt-dark-mode .content th {
+            color: var(--bt-text-color) !important;
+        }
+        body.bt-dark-mode .content pre,
+        body.bt-dark-mode .content code {
+            background: rgba(255,255,255,0.08) !important;
+            color: var(--bt-text-color) !important;
+        }
+        body.bt-dark-mode .content blockquote {
+            border-left-color: var(--bt-theme-color) !important;
+            color: var(--bt-text-color) !important;
+        }
+        body.bt-dark-mode .markdown-section a {
+            color: var(--bt-theme-color) !important;
         }
         /* 顶部右侧用户状态条 */
         .user-nav {
@@ -217,23 +257,41 @@
     <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-javascript.min.js"></script>
     <!-- 主题选择器与持久化逻辑 -->
     <script>
-        // 主题配置表：颜色 + 柔和背景渐变
+        // 主题配置表：颜色 + 柔和背景渐变 + 暗色模式标志
         const BT_THEMES = [
-            { id: "green",  name: "翠绿",   color: "#42b983", gradient: "linear-gradient(135deg, #f0f9f4 0%, #e3f5eb 100%)" },
-            { id: "blue",   name: "深海蓝", color: "#1976d2", gradient: "linear-gradient(135deg, #f0f6fb 0%, #dde9f5 100%)" },
-            { id: "orange", name: "暖阳橙", color: "#f57c00", gradient: "linear-gradient(135deg, #fdf6f0 0%, #fae6d5 100%)" },
-            { id: "rose",   name: "玫瑰红", color: "#e91e63", gradient: "linear-gradient(135deg, #fdf0f4 0%, #f8dce4 100%)" },
-            { id: "purple", name: "暗夜紫", color: "#7b1fa2", gradient: "linear-gradient(135deg, #f7f0fa 0%, #ecdcf3 100%)" },
-            { id: "cyan",   name: "极客青", color: "#00bcd4", gradient: "linear-gradient(135deg, #f0fbfc 0%, #d5f0f4 100%)" }
+            { id: "green",  name: "翠绿",   color: "#42b983", gradient: "linear-gradient(135deg, #f0f9f4 0%, #e3f5eb 100%)", dark: false },
+            { id: "blue",   name: "深海蓝", color: "#1976d2", gradient: "linear-gradient(135deg, #f0f6fb 0%, #dde9f5 100%)", dark: false },
+            { id: "orange", name: "暖阳橙", color: "#f57c00", gradient: "linear-gradient(135deg, #fdf6f0 0%, #fae6d5 100%)", dark: false },
+            { id: "rose",   name: "玫瑰红", color: "#e91e63", gradient: "linear-gradient(135deg, #fdf0f4 0%, #f8dce4 100%)", dark: false },
+            { id: "purple", name: "暗夜紫", color: "#7b1fa2", gradient: "linear-gradient(135deg, #f7f0fa 0%, #ecdcf3 100%)", dark: false },
+            { id: "cyan",   name: "极客青", color: "#00bcd4", gradient: "linear-gradient(135deg, #f0fbfc 0%, #d5f0f4 100%)", dark: false },
+            // 暗色主题：深色背景 + 白色字体
+            { id: "dark-green",  name: "暗夜翠", color: "#42b983", gradient: "linear-gradient(135deg, #0d1f17 0%, #142922 100%)", dark: true },
+            { id: "dark-blue",   name: "暗夜蓝", color: "#64b5f6", gradient: "linear-gradient(135deg, #0a1929 0%, #112842 100%)", dark: true },
+            { id: "dark-purple", name: "极夜紫", color: "#ba68c8", gradient: "linear-gradient(135deg, #1a0a2e 0%, #2d1145 100%)", dark: true }
         ];
         const BT_THEME_KEY = "brucetanghao_theme";
 
-        // 应用主题：更新 CSS 变量 + docsify themeColor + 侧边栏高亮色
+        // 应用主题：更新 CSS 变量 + docsify themeColor + 暗色模式切换
         function applyTheme(theme) {
             if (!theme) return;
             // 更新 CSS 变量，驱动按钮、用户入口、背景渐变
             document.documentElement.style.setProperty("--bt-theme-color", theme.color);
             document.documentElement.style.setProperty("--bt-bg-gradient", theme.gradient);
+            // 暗色模式：切换字体色与内容区背景
+            if (theme.dark) {
+                document.body.classList.add("bt-dark-mode");
+                document.documentElement.style.setProperty("--bt-text-color", "#e0e0e0");
+                document.documentElement.style.setProperty("--bt-sidebar-bg", "#1a1a2e");
+                document.documentElement.style.setProperty("--bt-content-bg", "#16213a");
+                document.documentElement.style.setProperty("--bt-border-color", "#2a2a4a");
+            } else {
+                document.body.classList.remove("bt-dark-mode");
+                document.documentElement.style.setProperty("--bt-text-color", "#34495e");
+                document.documentElement.style.setProperty("--bt-sidebar-bg", "#fff");
+                document.documentElement.style.setProperty("--bt-content-bg", "#fff");
+                document.documentElement.style.setProperty("--bt-border-color", "#eee");
+            }
             // 同步 docsify 主题色
             if (window.$docsify) {
                 window.$docsify.themeColor = theme.color;
