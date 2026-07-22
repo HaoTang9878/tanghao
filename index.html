@@ -5,12 +5,972 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BruceTang的作品集</title>
     <meta name="description" content="BruceTang的个人作品集 - 记录所学、所思、所做">
+    <meta name="author" content="BruceTang">
+    <!-- canonical：规范网址，避免重复内容影响 SEO -->
+    <link rel="canonical" href="https://brucetanghao.com/">
+    <!-- favicon：内联 SVG data URI，主题绿底 + BT 字母图标，不依赖外部资源 -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%2342b983'/><text x='32' y='45' font-family='Arial,Helvetica,sans-serif' font-size='38' font-weight='bold' text-anchor='middle' fill='%23ffffff'>BT</text></svg>">
+    <!-- 预连接 CDN：提前完成 DNS/TLS 握手，降低资源加载延迟 -->
+    <link rel="preconnect" href="//cdn.jsdelivr.net" crossorigin>
+    <!-- Open Graph：社交平台分享时的卡片信息 -->
+    <meta property="og:title" content="BruceTang的作品集">
+    <meta property="og:description" content="BruceTang的个人作品集 - 记录所学、所思、所做">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://brucetanghao.com/">
+    <meta property="og:image" content="https://github.com/HaoTang9878.png">
+    <meta property="og:site_name" content="BruceTang的作品集">
+    <meta property="og:locale" content="zh_CN">
+    <!-- Twitter Card：推特分享卡片 -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="BruceTang的作品集">
+    <meta name="twitter:description" content="BruceTang的个人作品集 - 记录所学、所思、所做">
+    <meta name="twitter:image" content="https://github.com/HaoTang9878.png">
+    <!-- 编辑型衬线字体：Newsreader（正文）+ Inter（UI/导航），对标 lixiaolai.com 排版 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+    <!-- 防闪烁：在 CSS 渲染前强制清除暗色模式残留，确保首屏为亮色 -->
+    <script>
+        (function () {
+            try {
+                var saved = localStorage.getItem("brucetanghao_theme");
+                if (saved) {
+                    var theme = JSON.parse(saved);
+                    // 如果保存的是暗色主题，清除它，回退到默认亮色
+                    if (theme && theme.dark) {
+                        localStorage.removeItem("brucetanghao_theme");
+                    }
+                }
+            } catch (e) {
+                // 读取失败也清除，避免脏数据
+                try { localStorage.removeItem("brucetanghao_theme"); } catch (e2) {}
+            }
+        })();
+    </script>
     <!-- docsify 核心样式和脚本 -->
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify-sidebar-collapse@1/dist/sidebar.min.css">
+    <!-- 自定义样式：用户状态条 / 主题选择器 / 编辑型排版 / 响应式布局 -->
+    <style>
+        /* 主题色变量（由 JS 动态注入 :root 变量） */
+        :root {
+            --bt-theme-color: #42b983;
+            --bt-bg-gradient: linear-gradient(135deg, #f0f9f4 0%, #e3f5eb 100%);
+            --bt-text-color: #34495e;
+            --bt-sidebar-bg: #fff;
+            --bt-content-bg: #fff;
+            --bt-border-color: #eee;
+            /* 编辑型字体变量：正文用衬线、UI 用无衬线 */
+            --bt-font-serif: 'Newsreader', Georgia, 'Noto Serif SC', serif;
+            --bt-font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+        /* 应用主题渐变背景到 body */
+        body {
+            background: var(--bt-bg-gradient);
+            transition: background 0.4s ease, color 0.4s ease;
+            color: var(--bt-text-color);
+            font-family: var(--bt-font-sans);
+        }
+        /* 编辑型排版：正文用衬线字体，标题/导航保持无衬线 */
+        .markdown-section {
+            font-family: var(--bt-font-serif);
+            font-size: 17px;
+            line-height: 1.8;
+            letter-spacing: 0.01em;
+        }
+        .markdown-section h1,
+        .markdown-section h2,
+        .markdown-section h3,
+        .markdown-section h4,
+        .markdown-section h5,
+        .markdown-section h6 {
+            font-family: var(--bt-font-sans);
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+        .markdown-section h1 {
+            font-size: 2.2em;
+            margin-bottom: 0.4em;
+        }
+        .markdown-section h2 {
+            font-size: 1.6em;
+            margin-top: 2em;
+            margin-bottom: 0.6em;
+            border-bottom: 1px solid var(--bt-border-color);
+            padding-bottom: 0.3em;
+        }
+        .markdown-section p {
+            margin-bottom: 1.2em;
+        }
+        .markdown-section blockquote p {
+            font-family: var(--bt-font-serif);
+            font-style: italic;
+            font-size: 1.05em;
+        }
+        /* 侧边栏用无衬线 */
+        .sidebar,
+        .sidebar a,
+        .sidebar h2,
+        .sidebar p {
+            font-family: var(--bt-font-sans);
+        }
+        /* Hero 区样式：首页大标题 + 身份描述 */
+        .bt-hero {
+            text-align: center;
+            padding: 40px 0 30px;
+            border-bottom: 1px solid var(--bt-border-color);
+            margin-bottom: 30px;
+        }
+        .bt-hero-title {
+            font-family: var(--bt-font-serif);
+            font-size: 2.8em;
+            font-weight: 500;
+            line-height: 1.2;
+            margin: 0 0 10px;
+            color: var(--bt-text-color);
+        }
+        .bt-hero-title em {
+            font-style: italic;
+            color: var(--bt-theme-color);
+            font-weight: 500;
+        }
+        .bt-hero-sub {
+            font-family: var(--bt-font-sans);
+            font-size: 1.1em;
+            color: #888;
+            margin: 8px 0 16px;
+        }
+        .bt-hero-tags {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+        .bt-hero-tags span {
+            font-family: var(--bt-font-sans);
+            font-size: 13px;
+            color: var(--bt-theme-color);
+            border: 1px solid var(--bt-theme-color);
+            border-radius: 20px;
+            padding: 3px 14px;
+        }
+        /* 编号分区标题：§ 01 · 文章 */
+        .bt-section-head {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin: 2.5em 0 1em;
+            padding-bottom: 0.5em;
+            border-bottom: 2px solid var(--bt-theme-color);
+        }
+        .bt-section-head h2 {
+            font-family: var(--bt-font-sans);
+            font-size: 1.4em;
+            font-weight: 600;
+            margin: 0;
+            border: none;
+            padding: 0;
+        }
+        .bt-section-head .bt-section-num {
+            font-family: var(--bt-font-serif);
+            font-style: italic;
+            color: var(--bt-theme-color);
+            margin-right: 8px;
+        }
+        .bt-section-head .bt-section-all {
+            font-family: var(--bt-font-sans);
+            font-size: 14px;
+            color: var(--bt-theme-color);
+            text-decoration: none;
+        }
+        .bt-section-head .bt-section-all:hover {
+            text-decoration: underline;
+        }
+        /* Currently 滚动条：实时状态展示 */
+        .bt-currently {
+            overflow: hidden;
+            white-space: nowrap;
+            border-top: 1px solid var(--bt-border-color);
+            border-bottom: 1px solid var(--bt-border-color);
+            padding: 10px 0;
+            margin: 0 0 30px;
+            font-family: var(--bt-font-sans);
+            font-size: 13px;
+            color: #888;
+        }
+        .bt-currently-track {
+            display: inline-block;
+            animation: bt-marquee 30s linear infinite;
+        }
+        .bt-currently-track span {
+            margin: 0 30px;
+        }
+        .bt-currently-track strong {
+            color: var(--bt-theme-color);
+        }
+        @keyframes bt-marquee {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+        /* 文章卡片网格 */
+        .bt-article-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .bt-article-card {
+            border: 1px solid var(--bt-border-color);
+            border-radius: 8px;
+            padding: 20px;
+            transition: box-shadow 0.2s ease, transform 0.2s ease;
+            background: var(--bt-content-bg);
+        }
+        .bt-article-card:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+        }
+        .bt-article-card h3 {
+            font-family: var(--bt-font-sans);
+            font-size: 1.1em;
+            margin: 0 0 8px;
+        }
+        .bt-article-card .bt-card-meta {
+            font-family: var(--bt-font-sans);
+            font-size: 12px;
+            color: #aaa;
+            margin-bottom: 8px;
+        }
+        .bt-article-card p {
+            font-family: var(--bt-font-serif);
+            font-size: 0.95em;
+            line-height: 1.6;
+            margin: 0;
+        }
+        /* 暗色模式适配新样式 */
+        body.bt-dark-mode .bt-hero-title { color: var(--bt-text-color); }
+        body.bt-dark-mode .bt-hero-sub { color: #9aa0b4; }
+        body.bt-dark-mode .bt-currently { color: #9aa0b4; border-color: var(--bt-border-color); }
+        body.bt-dark-mode .bt-article-card { border-color: var(--bt-border-color); }
+        body.bt-dark-mode .bt-article-card .bt-card-meta { color: #777; }
+        body.bt-dark-mode .bt-section-head { border-bottom-color: var(--bt-theme-color); }
+        /* 响应式：移动端缩小 Hero */
+        @media (max-width: 768px) {
+            .bt-hero-title { font-size: 2em; }
+            .bt-hero-sub { font-size: 1em; }
+            .bt-article-grid { grid-template-columns: 1fr; }
+            .markdown-section { font-size: 16px; }
+        }
+        /* 暗色模式：覆盖 docsify 内容区、侧边栏、代码块的背景与字体 */
+        body.bt-dark-mode .sidebar {
+            background: var(--bt-sidebar-bg) !important;
+            color: var(--bt-text-color) !important;
+        }
+        body.bt-dark-mode .sidebar a,
+        body.bt-dark-mode .sidebar h2,
+        body.bt-dark-mode .sidebar p {
+            color: var(--bt-text-color) !important;
+        }
+        body.bt-dark-mode .content {
+            background: var(--bt-content-bg) !important;
+            color: var(--bt-text-color) !important;
+        }
+        body.bt-dark-mode .content h1,
+        body.bt-dark-mode .content h2,
+        body.bt-dark-mode .content h3,
+        body.bt-dark-mode .content p,
+        body.bt-dark-mode .content li,
+        body.bt-dark-mode .content td,
+        body.bt-dark-mode .content th {
+            color: var(--bt-text-color) !important;
+        }
+        body.bt-dark-mode .content pre,
+        body.bt-dark-mode .content code {
+            background: rgba(255,255,255,0.08) !important;
+            color: var(--bt-text-color) !important;
+        }
+        body.bt-dark-mode .content blockquote {
+            border-left-color: var(--bt-theme-color) !important;
+            color: var(--bt-text-color) !important;
+        }
+        body.bt-dark-mode .markdown-section a {
+            color: var(--bt-theme-color) !important;
+        }
+        /* 顶部右侧用户状态条 */
+        .user-nav {
+            position: fixed;
+            top: 16px;
+            right: 80px;
+            z-index: 100;
+            font-size: 14px;
+        }
+        .user-nav a {
+            color: var(--bt-theme-color);
+            text-decoration: none;
+            margin-left: 12px;
+        }
+        .user-nav a:hover {
+            text-decoration: underline;
+        }
+        .user-nav .username {
+            color: #6c757d;
+            margin-right: 8px;
+        }
+
+        /* ====== 主题选择器：浮动按钮 + 展开面板 ====== */
+        .theme-picker {
+            position: fixed;
+            top: 16px;
+            right: 24px;
+            z-index: 200;
+        }
+        .theme-picker-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            background: var(--bt-theme-color);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .theme-picker-btn:hover {
+            transform: rotate(15deg);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .theme-picker-btn svg {
+            width: 22px;
+            height: 22px;
+            fill: #fff;
+        }
+        /* 主题面板（默认隐藏，点击按钮后展开） */
+        .theme-panel {
+            position: absolute;
+            top: 52px;
+            right: 0;
+            width: 200px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+            padding: 12px;
+            display: none;
+        }
+        .theme-panel.open {
+            display: block;
+        }
+        .theme-panel-title {
+            font-size: 13px;
+            color: #6c757d;
+            margin: 0 0 10px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 8px;
+        }
+        .theme-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .theme-list li {
+            display: flex;
+            align-items: center;
+            padding: 8px 6px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background 0.15s;
+        }
+        .theme-list li:hover {
+            background: #f5f5f5;
+        }
+        .theme-list li.active {
+            background: #f0f0f0;
+            font-weight: 600;
+        }
+        .theme-swatch {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 10px;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+        .theme-name {
+            font-size: 14px;
+            color: #333;
+        }
+
+        /* ====== 阅读进度条：固定页面顶部，宽度随阅读进度变化 ====== */
+        .bt-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            width: 0%;
+            background: var(--bt-theme-color);
+            z-index: 300;
+            transition: width 0.1s ease-out;
+        }
+
+        /* ====== 回到顶部按钮：固定右下角，滚动超阈值后淡入 ====== */
+        .bt-backtop {
+            position: fixed;
+            right: 28px;
+            bottom: 32px;
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 50%;
+            background: var(--bt-theme-color);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(12px);
+            transition: opacity 0.3s ease, transform 0.3s ease,
+                        visibility 0.3s, box-shadow 0.2s ease;
+            z-index: 150;
+        }
+        .bt-backtop.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .bt-backtop:hover {
+            box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+        }
+        .bt-backtop svg {
+            width: 22px;
+            height: 22px;
+            fill: #fff;
+        }
+
+        /* ====== 加载动画：居中旋转圆环，docsify 渲染完成后隐藏 ====== */
+        .bt-loader {
+            position: fixed;
+            inset: 0;
+            z-index: 400;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bt-bg-gradient);
+            transition: opacity 0.4s ease;
+        }
+        .bt-loader.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .bt-loader-ring {
+            width: 48px;
+            height: 48px;
+            border: 4px solid rgba(0,0,0,0.1);
+            border-top-color: var(--bt-theme-color);
+            border-radius: 50%;
+            animation: bt-spin 0.8s linear infinite;
+        }
+        @keyframes bt-spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ====== 主题面板暗色模式适配 ====== */
+        body.bt-dark-mode .theme-panel {
+            background: #1a1a2e;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+        }
+        body.bt-dark-mode .theme-panel-title {
+            color: #9aa0b4;
+            border-bottom-color: #2a2a4a;
+        }
+        body.bt-dark-mode .theme-list li:hover {
+            background: rgba(255,255,255,0.08);
+        }
+        body.bt-dark-mode .theme-list li.active {
+            background: rgba(255,255,255,0.12);
+        }
+        body.bt-dark-mode .theme-name {
+            color: #e0e0e0;
+        }
+
+        /* ====== 用户状态条暗色适配 + GitHub 图标样式 ====== */
+        body.bt-dark-mode .user-nav .username {
+            color: #9aa0b4;
+        }
+        body.bt-dark-mode .bt-loader-ring {
+            border-color: rgba(255,255,255,0.12);
+            border-top-color: var(--bt-theme-color);
+        }
+        .user-nav a {
+            transition: opacity 0.2s ease;
+        }
+        .user-nav a:hover {
+            opacity: 0.75;
+        }
+        .user-nav .gh-link {
+            display: inline-flex;
+            align-items: center;
+            margin-left: 12px;
+            vertical-align: middle;
+        }
+        .user-nav .gh-link svg {
+            width: 18px;
+            height: 18px;
+            fill: var(--bt-theme-color);
+            transition: opacity 0.2s ease;
+        }
+        .user-nav .gh-link:hover svg {
+            opacity: 0.75;
+        }
+
+        /* ====== 文章阅读时间：标题下方灰色小字 ====== */
+        .bt-reading-time {
+            font-size: 13px;
+            color: #999;
+            margin: -8px 0 16px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .bt-reading-time svg {
+            width: 14px;
+            height: 14px;
+            fill: #999;
+        }
+        body.bt-dark-mode .bt-reading-time {
+            color: #888;
+        }
+        body.bt-dark-mode .bt-reading-time svg {
+            fill: #888;
+        }
+
+        /* ====== 社交分享按钮：浮动在文章右侧 ====== */
+        .bt-share {
+            position: fixed;
+            right: 28px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 120;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .bt-share.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .bt-share-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease,
+                        background 0.2s ease;
+        }
+        .bt-share-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .bt-share-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+        /* Twitter/X 图标颜色 */
+        .bt-share-twitter svg {
+            fill: #1da1f2;
+        }
+        /* LinkedIn 图标颜色 */
+        .bt-share-linkedin svg {
+            fill: #0077b5;
+        }
+        /* 复制链接按钮使用主题色 */
+        .bt-share-copy svg {
+            fill: var(--bt-theme-color);
+        }
+        /* 复制成功反馈提示 */
+        .bt-share-tip {
+            position: absolute;
+            right: 52px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--bt-theme-color);
+            color: #fff;
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 4px;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        .bt-share-tip.show {
+            opacity: 1;
+        }
+        /* 暗色模式适配：按钮背景改为深色 */
+        body.bt-dark-mode .bt-share-btn {
+            background: #1a1a2e;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+        }
+
+        /* ====== 响应式设计：平板 ====== */
+        @media (max-width: 1024px) {
+            .markdown-section {
+                max-width: 90% !important;
+            }
+        }
+
+        /* ====== 响应式设计：移动端 ====== */
+        @media (max-width: 768px) {
+            .user-nav {
+                right: 64px;
+                font-size: 12px;
+            }
+            .user-nav a {
+                margin-left: 8px;
+            }
+            .theme-picker-btn {
+                width: 36px;
+                height: 36px;
+            }
+            .theme-picker-btn svg {
+                width: 18px;
+                height: 18px;
+            }
+            .theme-panel {
+                width: 180px;
+            }
+            .markdown-section {
+                max-width: 95% !important;
+                padding: 16px !important;
+            }
+            /* docsify 侧边栏在移动端可折叠为抽屉 */
+            body.close .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar-toggle {
+                display: block !important;
+            }
+            /* 移动端隐藏浮动分享按钮，避免遮挡内容 */
+            .bt-share {
+                display: none !important;
+            }
+        }
+
+        /* ====== 打印友好样式：隐藏导航元素，内容全宽 ====== */
+        @media print {
+            /* 隐藏侧边栏、主题选择器、用户状态条、回到顶部、进度条、分享按钮、加载动画 */
+            .sidebar,
+            .sidebar-toggle,
+            .theme-picker,
+            .user-nav,
+            .bt-backtop,
+            .bt-progress,
+            .bt-share,
+            .bt-loader {
+                display: none !important;
+            }
+            /* 内容区全宽显示，去除最大宽度限制 */
+            .content,
+            .markdown-section {
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            /* 字体改为黑色，背景纯白 */
+            body {
+                background: #fff !important;
+                color: #000 !important;
+            }
+            .content,
+            .markdown-section {
+                background: #fff !important;
+                color: #000 !important;
+            }
+            /* 标题与正文统一黑色 */
+            .content h1,
+            .content h2,
+            .content h3,
+            .content h4,
+            .content h5,
+            .content h6,
+            .content p,
+            .content li,
+            .content td,
+            .content th,
+            .content blockquote {
+                color: #000 !important;
+            }
+            /* 链接显示 URL，方便打印后查阅 */
+            .content a::after {
+                content: " (" attr(href) ")";
+                font-size: 90%;
+                color: #555;
+            }
+            /* 代码块保留边框但去掉背景色 */
+            .content pre {
+                border: 1px solid #ccc !important;
+                background: transparent !important;
+                color: #000 !important;
+            }
+            .content code {
+                background: transparent !important;
+                color: #000 !important;
+            }
+            .content pre code {
+                color: #000 !important;
+            }
+        }
+    </style>
 </head>
 <body>
+    <!-- 阅读进度条：固定最顶部，宽度随阅读进度变化 -->
+    <div class="bt-progress" id="bt-progress"></div>
+    <!-- 加载动画：居中旋转圆环，docsify 内容渲染完成后自动隐藏 -->
+    <div class="bt-loader" id="bt-loader">
+        <div class="bt-loader-ring"></div>
+    </div>
     <div id="app">加载中...</div>
+    <!-- 顶部用户状态条(由 auth.js 动态渲染) -->
+    <div class="user-nav" id="user-nav"></div>
+    <!-- 主题选择器：浮动按钮 + 展开面板 -->
+    <div class="theme-picker">
+        <button class="theme-picker-btn" id="theme-picker-btn" title="切换主题" aria-label="切换主题">
+            <!-- 内联 SVG 调色板图标，不依赖外部资源 -->
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c1.1 0 2-.9 2-2 0-.51-.2-.97-.52-1.32-.31-.34-.48-.79-.48-1.28 0-1.1.9-2 2-2h2.36c2.04 0 3.64-1.6 3.64-3.6C22 6.48 17.52 2 12 2zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 8 6.5 8 8 8.67 8 9.5 7.33 11 6.5 11zm3-4C8.67 7 8 6.33 8 5.5S8.67 4 9.5 4s1.5.67 1.5 1.5S10.33 7 9.5 7zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 4 14.5 4s1.5.67 1.5 1.5S15.33 7 14.5 7zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 8 17.5 8s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+            </svg>
+        </button>
+        <div class="theme-panel" id="theme-panel">
+            <p class="theme-panel-title">选择主题</p>
+            <ul class="theme-list" id="theme-list"></ul>
+        </div>
+    </div>
+    <!-- 社交分享按钮：浮动在文章右侧（由 JS 在文章页动态显示） -->
+    <div class="bt-share" id="bt-share">
+        <span class="bt-share-tip" id="bt-share-tip">已复制链接</span>
+        <a class="bt-share-btn bt-share-twitter" id="bt-share-twitter" target="_blank" rel="noopener" title="分享到 Twitter/X" aria-label="分享到 Twitter/X">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.98 8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z"/></svg>
+        </a>
+        <a class="bt-share-btn bt-share-linkedin" id="bt-share-linkedin" target="_blank" rel="noopener" title="分享到 LinkedIn" aria-label="分享到 LinkedIn">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+        </a>
+        <button class="bt-share-btn bt-share-copy" id="bt-share-copy" title="复制链接" aria-label="复制链接">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+        </button>
+    </div>
+    <!-- 文章增强：阅读时间估算 + 社交分享按钮（内联实现，不依赖外部库） -->
+    <script>
+        (function () {
+            "use strict";
+
+            // 中文阅读速度：每分钟 300 字
+            var READ_SPEED = 300;
+
+            /**
+             * 判断当前页面是否为文章页（articles/ 路径下）
+             * docsify 使用 hash 路由，格式为 #/articles/programming/notes
+             * @returns {boolean} 是否为文章页
+             */
+            function isArticlePage() {
+                try {
+                    var hash = location.hash || "";
+                    return hash.indexOf("#/articles/") !== -1;
+                } catch (err) {
+                    return false;
+                }
+            }
+
+            /**
+             * 获取当前页面的完整 URL（去掉 hash 中的 #，拼接为正常路径）
+             * docsify 的 hash 路由需要转换为可分享的标准 URL
+             * @returns {string} 当前页面完整 URL
+             */
+            function getCurrentUrl() {
+                try {
+                    var hash = location.hash || "";
+                    // 将 #/path 转换为 /path，生成可访问的 URL
+                    var path = hash.replace(/^#/, "");
+                    return location.origin + location.pathname + path;
+                } catch (err) {
+                    return location.href;
+                }
+            }
+
+            /**
+             * 获取当前文章标题（取第一个 h1 文本）
+             * @returns {string} 文章标题
+             */
+            function getArticleTitle() {
+                try {
+                    var h1 = document.querySelector(".markdown-section h1");
+                    return h1 ? (h1.textContent || "").trim() : document.title;
+                } catch (err) {
+                    return document.title;
+                }
+            }
+
+            /**
+             * 计算并渲染阅读时间：统计正文文字数，按每分钟 300 字估算
+             * 在文章第一个 h1 标题下方插入"约 X 分钟阅读"
+             */
+            function renderReadingTime() {
+                // 先移除旧的阅读时间元素，避免重复
+                var old = document.querySelector(".bt-reading-time");
+                if (old) old.remove();
+
+                try {
+                    var section = document.querySelector(".markdown-section");
+                    if (!section) return;
+
+                    // 统计正文文字数（去除代码块，避免代码干扰字数统计）
+                    var clone = section.cloneNode(true);
+                    var codeBlocks = clone.querySelectorAll("pre");
+                    codeBlocks.forEach(function (el) { el.remove(); });
+                    var text = (clone.textContent || "").replace(/\s+/g, "");
+                    var wordCount = text.length;
+
+                    // 字数过少（如目录页）则不显示
+                    if (wordCount < 50) return;
+
+                    var minutes = Math.ceil(wordCount / READ_SPEED);
+
+                    // 时钟图标 SVG（内联，无外部依赖）
+                    var svg = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">'
+                        + '<path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z"/></svg>';
+
+                    var el = document.createElement("div");
+                    el.className = "bt-reading-time";
+                    el.innerHTML = svg + "<span>约 " + minutes + " 分钟阅读</span>";
+
+                    // 插入到第一个 h1 标题之后
+                    var h1 = section.querySelector("h1");
+                    if (h1 && h1.nextSibling) {
+                        section.insertBefore(el, h1.nextSibling);
+                    } else if (h1) {
+                        h1.appendChild(el);
+                    } else {
+                        section.insertBefore(el, section.firstChild);
+                    }
+                } catch (err) {
+                    console.warn("阅读时间计算失败:", err);
+                }
+            }
+
+            /**
+             * 渲染社交分享按钮：设置 Twitter/LinkedIn 分享链接，绑定复制链接事件
+             * 仅在文章页显示，非文章页隐藏
+             */
+            function renderShareButtons() {
+                var shareEl = document.getElementById("bt-share");
+                if (!shareEl) return;
+
+                try {
+                    if (!isArticlePage()) {
+                        shareEl.classList.remove("show");
+                        return;
+                    }
+
+                    var url = encodeURIComponent(getCurrentUrl());
+                    var title = encodeURIComponent(getArticleTitle());
+
+                    // 设置 Twitter/X 分享链接
+                    var twitterBtn = document.getElementById("bt-share-twitter");
+                    if (twitterBtn) {
+                        twitterBtn.href = "https://twitter.com/intent/tweet?text=" + title + "&url=" + url;
+                    }
+
+                    // 设置 LinkedIn 分享链接
+                    var linkedinBtn = document.getElementById("bt-share-linkedin");
+                    if (linkedinBtn) {
+                        linkedinBtn.href = "https://www.linkedin.com/sharing/share-offsite/?url=" + url;
+                    }
+
+                    shareEl.classList.add("show");
+                } catch (err) {
+                    console.warn("分享按钮渲染失败:", err);
+                    shareEl.classList.remove("show");
+                }
+            }
+
+            /**
+             * 复制当前页面链接到剪贴板
+             * 优先使用 navigator.clipboard API，降级到 execCommand
+             */
+            function copyLink() {
+                var url = getCurrentUrl();
+                var tip = document.getElementById("bt-share-tip");
+
+                try {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(url).then(function () {
+                            showCopyTip(tip);
+                        }).catch(function () {
+                            fallbackCopy(url, tip);
+                        });
+                    } else {
+                        fallbackCopy(url, tip);
+                    }
+                } catch (err) {
+                    fallbackCopy(url, tip);
+                }
+            }
+
+            /**
+             * 降级复制方案：使用临时 textarea + execCommand
+             * @param {string} url - 待复制的 URL
+             * @param {Element} tip - 复制成功提示元素
+             */
+            function fallbackCopy(url, tip) {
+                try {
+                    var textarea = document.createElement("textarea");
+                    textarea.value = url;
+                    textarea.style.position = "fixed";
+                    textarea.style.opacity = "0";
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand("copy");
+                    document.body.removeChild(textarea);
+                    showCopyTip(tip);
+                } catch (err) {
+                    console.warn("复制链接失败:", err);
+                }
+            }
+
+            /**
+             * 显示"已复制链接"提示，2 秒后自动消失
+             * @param {Element} tip - 提示元素
+             */
+            function showCopyTip(tip) {
+                if (!tip) return;
+                tip.classList.add("show");
+                setTimeout(function () {
+                    tip.classList.remove("show");
+                }, 2000);
+            }
+
+            // 绑定复制链接按钮点击事件
+            document.addEventListener("DOMContentLoaded", function () {
+                var copyBtn = document.getElementById("bt-share-copy");
+                if (copyBtn) copyBtn.addEventListener("click", copyLink);
+            });
+
+            // 暴露给 docsify doneEach 钩子调用
+            window.btRenderReadingTime = renderReadingTime;
+            window.btRenderShareButtons = renderShareButtons;
+        })();
+    </script>
     <script>
         window.$docsify = {
             // 网站名称（显示在侧边栏顶部）
@@ -31,17 +991,302 @@
                 noData: "没有找到结果",
                 depth: 3
             },
-            // 主题色
+            // 主题色（初始值，后续由主题选择器覆盖）
             themeColor: "#42b983",
             // 字体大小
-            fontSize: "15px"
+            fontSize: "15px",
+            // 找不到路由时展示的自定义 404 页面
+            notFoundPage: "404.md",
+            // 生命周期钩子：绑定滚动监听 + 隐藏加载动画
+            hooks: {
+                // docsify 挂载完成后初始化回到顶部/进度条的滚动监听
+                mounted: function () {
+                    if (typeof window.btInitScroll === "function") {
+                        window.btInitScroll();
+                    }
+                },
+                // 每次路由渲染完成后隐藏加载动画 + 渲染阅读时间与分享按钮
+                doneEach: function () {
+                    var loader = document.getElementById("bt-loader");
+                    if (loader) loader.classList.add("hidden");
+                    // 渲染文章阅读时间（仅 articles/ 路径下显示）
+                    if (typeof window.btRenderReadingTime === "function") {
+                        window.btRenderReadingTime();
+                    }
+                    // 渲染社交分享按钮（仅 articles/ 路径下显示）
+                    if (typeof window.btRenderShareButtons === "function") {
+                        window.btRenderShareButtons();
+                    }
+                }
+            }
         };
     </script>
+    <!-- docsify 核心：同步加载，其余插件与语言包均依赖它先就绪 -->
     <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
-    <script src="//cdn.jsdelivr.net/npm/docsify-sidebar-collapse@1"></script>
-    <script src="//cdn.jsdelivr.net/npm/docsify-copy-code@2"></script>
-    <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
-    <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-python.min.js"></script>
-    <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-javascript.min.js"></script>
+    <!-- docsify 插件：defer 按文档顺序执行且不阻塞 HTML 解析 -->
+    <script defer src="//cdn.jsdelivr.net/npm/docsify-sidebar-collapse@1"></script>
+    <script defer src="//cdn.jsdelivr.net/npm/docsify-copy-code@2"></script>
+    <!-- PrismJS 语言包：async 并行下载，尽快注册语法高亮（docsify 已提供 Prism 全局） -->
+    <script async src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
+    <script async src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-python.min.js"></script>
+    <script async src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-javascript.min.js"></script>
+    <!-- 主题选择器与持久化逻辑 -->
+    <script>
+        // 主题配置表：颜色 + 柔和背景渐变 + 暗色模式标志
+        const BT_THEMES = [
+            { id: "green",  name: "翠绿",   color: "#42b983", gradient: "linear-gradient(135deg, #f0f9f4 0%, #e3f5eb 100%)", dark: false },
+            { id: "blue",   name: "深海蓝", color: "#1976d2", gradient: "linear-gradient(135deg, #f0f6fb 0%, #dde9f5 100%)", dark: false },
+            { id: "orange", name: "暖阳橙", color: "#f57c00", gradient: "linear-gradient(135deg, #fdf6f0 0%, #fae6d5 100%)", dark: false },
+            { id: "rose",   name: "玫瑰红", color: "#e91e63", gradient: "linear-gradient(135deg, #fdf0f4 0%, #f8dce4 100%)", dark: false },
+            { id: "purple", name: "暗夜紫", color: "#7b1fa2", gradient: "linear-gradient(135deg, #f7f0fa 0%, #ecdcf3 100%)", dark: false },
+            { id: "cyan",   name: "极客青", color: "#00bcd4", gradient: "linear-gradient(135deg, #f0fbfc 0%, #d5f0f4 100%)", dark: false },
+            // 暗色主题：深色背景 + 白色字体
+            { id: "dark-green",  name: "暗夜翠", color: "#42b983", gradient: "linear-gradient(135deg, #0d1f17 0%, #142922 100%)", dark: true },
+            { id: "dark-blue",   name: "暗夜蓝", color: "#64b5f6", gradient: "linear-gradient(135deg, #0a1929 0%, #112842 100%)", dark: true },
+            { id: "dark-purple", name: "极夜紫", color: "#ba68c8", gradient: "linear-gradient(135deg, #1a0a2e 0%, #2d1145 100%)", dark: true }
+        ];
+        const BT_THEME_KEY = "brucetanghao_theme";
+
+        // 应用主题：更新 CSS 变量 + docsify themeColor + 暗色模式切换
+        function applyTheme(theme) {
+            if (!theme) return;
+            // 更新 CSS 变量，驱动按钮、用户入口、背景渐变
+            document.documentElement.style.setProperty("--bt-theme-color", theme.color);
+            document.documentElement.style.setProperty("--bt-bg-gradient", theme.gradient);
+            // 暗色模式：切换字体色与内容区背景
+            if (theme.dark) {
+                document.body.classList.add("bt-dark-mode");
+                document.documentElement.style.setProperty("--bt-text-color", "#e0e0e0");
+                document.documentElement.style.setProperty("--bt-sidebar-bg", "#1a1a2e");
+                document.documentElement.style.setProperty("--bt-content-bg", "#16213a");
+                document.documentElement.style.setProperty("--bt-border-color", "#2a2a4a");
+            } else {
+                document.body.classList.remove("bt-dark-mode");
+                document.documentElement.style.setProperty("--bt-text-color", "#34495e");
+                document.documentElement.style.setProperty("--bt-sidebar-bg", "#fff");
+                document.documentElement.style.setProperty("--bt-content-bg", "#fff");
+                document.documentElement.style.setProperty("--bt-border-color", "#eee");
+            }
+            // 同步 docsify 主题色
+            if (window.$docsify) {
+                window.$docsify.themeColor = theme.color;
+            }
+            // 同步 docsify 渲染后的侧边栏激活色
+            const sidebar = document.querySelector(".sidebar");
+            if (sidebar) {
+                sidebar.style.setProperty("--theme-color", theme.color);
+            }
+            // 更新选中态
+            document.querySelectorAll(".theme-list li").forEach(function(li) {
+                li.classList.toggle("active", li.dataset.themeId === theme.id);
+            });
+        }
+
+        // 渲染主题选择面板
+        function renderThemeList() {
+            const list = document.getElementById("theme-list");
+            if (!list) return;
+            list.innerHTML = BT_THEMES.map(function(t) {
+                return '<li data-theme-id="' + t.id + '">' +
+                    '<span class="theme-swatch" style="background:' + t.color + '"></span>' +
+                    '<span class="theme-name">' + t.name + '</span>' +
+                    '</li>';
+            }).join("");
+            // 点击切换主题并持久化
+            list.querySelectorAll("li").forEach(function(li) {
+                li.addEventListener("click", function() {
+                    const theme = BT_THEMES.find(function(t) { return t.id === li.dataset.themeId; });
+                    if (!theme) return;
+                    applyTheme(theme);
+                    try {
+                        localStorage.setItem(BT_THEME_KEY, JSON.stringify(theme));
+                    } catch (err) {
+                        // localStorage 不可用时仅本次会话生效，不影响使用
+                        console.warn("主题持久化失败:", err);
+                    }
+                });
+            });
+        }
+
+        // 页面加载时读取已保存的主题
+        function loadSavedTheme() {
+            try {
+                const saved = localStorage.getItem(BT_THEME_KEY);
+                if (saved) {
+                    const theme = JSON.parse(saved);
+                    applyTheme(theme);
+                    return;
+                }
+            } catch (err) {
+                console.warn("读取主题失败:", err);
+            }
+            // 未保存则应用默认翠绿
+            applyTheme(BT_THEMES[0]);
+        }
+
+        // 切换主题面板展开/收起
+        function toggleThemePanel() {
+            const panel = document.getElementById("theme-panel");
+            if (panel) panel.classList.toggle("open");
+        }
+
+        // 点击页面其他区域关闭面板
+        document.addEventListener("click", function(e) {
+            const picker = document.querySelector(".theme-picker");
+            const panel = document.getElementById("theme-panel");
+            if (picker && panel && !picker.contains(e.target)) {
+                panel.classList.remove("open");
+            }
+        });
+
+        // 初始化主题选择器
+        document.addEventListener("DOMContentLoaded", function() {
+            renderThemeList();
+            loadSavedTheme();
+            const btn = document.getElementById("theme-picker-btn");
+            if (btn) btn.addEventListener("click", function(e) {
+                e.stopPropagation();
+                toggleThemePanel();
+            });
+        });
+    </script>
+    <!-- 认证状态管理:根据 localStorage 渲染顶部用户入口 -->
+    <script>
+        // GitHub 图标链接：固定展示，指向个人主页（内联 SVG，无外部依赖）
+        const BT_GH_ICON =
+            '<a class="gh-link" href="https://github.com/HaoTang9878" target="_blank" rel="noopener" title="GitHub 主页" aria-label="GitHub 主页">' +
+            '<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg></a>';
+
+        // 渲染顶部用户状态(登录/未登录显示不同入口)
+        function renderUserNav() {
+            const navEl = document.getElementById("user-nav");
+            if (!navEl) return;
+            const token = localStorage.getItem("brucetanghao_token");
+            const userStr = localStorage.getItem("brucetanghao_user");
+            if (token && userStr) {
+                // 已登录:显示用户名、登出与 GitHub 入口
+                let user = {};
+                try {
+                    user = JSON.parse(userStr) || {};
+                } catch (err) {
+                    // 用户数据损坏时清除并按未登录处理，避免页面白屏
+                    console.warn("用户数据解析失败:", err);
+                    localStorage.removeItem("brucetanghao_user");
+                    navEl.innerHTML =
+                        '<a href="#/login">登录</a>' +
+                        '<a href="#/register">注册</a>' +
+                        BT_GH_ICON;
+                    return;
+                }
+                navEl.innerHTML =
+                    '<span class="username">Hi, ' + (user.display_name || user.username || "用户") + "</span>" +
+                    '<a href="#/" onclick="logout()">登出</a>' +
+                    BT_GH_ICON;
+            } else {
+                // 未登录:显示登录/注册入口与 GitHub 入口
+                navEl.innerHTML =
+                    '<a href="#/login">登录</a>' +
+                    '<a href="#/register">注册</a>' +
+                    BT_GH_ICON;
+            }
+        }
+        // 登出:清除本地 token 并跳转首页
+        function logout() {
+            // JWT 无状态:前端清除 token 即完成登出
+            localStorage.removeItem("brucetanghao_token");
+            localStorage.removeItem("brucetanghao_user");
+            location.href = "#/";
+        }
+        // 路由变化时重新渲染顶部状态
+        if (window.$docsify) {
+            const origHook = window.$docsify.hooks;
+        }
+        // 初始渲染 + 定时刷新(捕获登录后状态变化)
+        document.addEventListener("DOMContentLoaded", renderUserNav);
+        setInterval(renderUserNav, 1000);
+    </script>
+    <!-- UX 增强：阅读进度条 + 回到顶部按钮（内联实现，不依赖外部库） -->
+    <script>
+        (function () {
+            "use strict";
+
+            // 回到顶部按钮出现的滚动阈值（单位：px）
+            var SCROLL_THRESHOLD = 300;
+
+            // 获取实际滚动容器：docsify 内容区优先，回退到文档根元素
+            function getScrollContainer() {
+                try {
+                    var content = document.querySelector(".content");
+                    if (content && content.scrollHeight > content.clientHeight) {
+                        return content;
+                    }
+                } catch (err) {
+                    // 查询失败时忽略，使用兜底容器
+                }
+                return document.scrollingElement || document.documentElement;
+            }
+
+            // 计算当前阅读进度（0~1），兼容内容区与窗口两种滚动模式
+            function calcProgress() {
+                var content = document.querySelector(".content");
+                var winTop = window.pageYOffset || document.documentElement.scrollTop || 0;
+                if (content && content.scrollHeight > content.clientHeight) {
+                    var max = content.scrollHeight - content.clientHeight;
+                    return max > 0 ? Math.min(content.scrollTop / max, 1) : 0;
+                }
+                var docMax = document.documentElement.scrollHeight - window.innerHeight;
+                return docMax > 0 ? Math.min(winTop / docMax, 1) : 0;
+            }
+
+            // 滚动回调：更新进度条宽度 + 控制回到顶部按钮显隐
+            function onScroll() {
+                var bar = document.getElementById("bt-progress");
+                if (bar) {
+                    bar.style.width = (calcProgress() * 100) + "%";
+                }
+                var container = getScrollContainer();
+                var top = (container && container.scrollTop) || window.pageYOffset || 0;
+                var btn = document.getElementById("bt-backtop");
+                if (!btn) return;
+                if (top > SCROLL_THRESHOLD) {
+                    btn.classList.add("show");
+                } else {
+                    btn.classList.remove("show");
+                }
+            }
+
+            // 平滑滚动到顶部，失败时回退到直接置顶
+            function scrollToTop() {
+                var container = getScrollContainer();
+                try {
+                    container.scrollTo({ top: 0, behavior: "smooth" });
+                } catch (err) {
+                    container.scrollTop = 0;
+                }
+            }
+
+            // 初始化滚动监听（由 docsify mounted 钩子触发）
+            function btInitScroll() {
+                try {
+                    var container = getScrollContainer();
+                    container.addEventListener("scroll", onScroll, { passive: true });
+                    // 兜底：监听窗口滚动（部分主题以 body 为滚动体）
+                    window.addEventListener("scroll", onScroll, { passive: true });
+                    onScroll();
+                } catch (err) {
+                    console.warn("滚动监听初始化失败:", err);
+                }
+            }
+
+            // 暴露给 docsify mounted 钩子调用
+            window.btInitScroll = btInitScroll;
+
+            // 绑定回到顶部按钮点击事件
+            document.addEventListener("DOMContentLoaded", function () {
+                var btn = document.getElementById("bt-backtop");
+                if (btn) btn.addEventListener("click", scrollToTop);
+            });
+        })();
+    </script>
 </body>
 </html>
