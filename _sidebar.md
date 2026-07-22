@@ -1,5 +1,8 @@
 - [首页](/)
 
+- 报告
+  - [日报](/daily)
+
 - 文字作品
   - [技术文章](/articles/programming/)
     - [编程学习笔记](/articles/programming/notes.md)

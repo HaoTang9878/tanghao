@@ -52,6 +52,9 @@ router.get("/", (req, res) => {
             topics: db.forum_topics.length,
             replies: db.forum_replies.length,
             users: db.users.length,
+            papers: db.papers.length,
+            patents: db.patents.length,
+            software: db.software.length,
         };
 
         const recent = {
@@ -59,6 +62,9 @@ router.get("/", (req, res) => {
             books: pickRecent(db.books, RECENT_LIMIT),
             projects: pickRecent(db.projects, RECENT_LIMIT),
             topics: pickRecent(db.forum_topics, RECENT_LIMIT),
+            papers: pickRecent(db.papers, RECENT_LIMIT),
+            patents: pickRecent(db.patents, RECENT_LIMIT),
+            software: pickRecent(db.software, RECENT_LIMIT, "name"),
         };
 
         return res.json({ counts, recent });

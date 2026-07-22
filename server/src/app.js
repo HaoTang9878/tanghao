@@ -9,6 +9,9 @@
  * - 文章:GET/POST /api/articles, GET/PUT/DELETE /api/articles/:slug
  * - 书籍:GET/POST /api/books, GET/PUT/DELETE /api/books/:slug
  * - 项目:GET/POST /api/projects, GET/PUT/DELETE /api/projects/:slug
+ * - 论文:GET/POST /api/papers, GET/PUT/DELETE /api/papers/:id
+ * - 专利:GET/POST /api/patents, GET/PUT/DELETE /api/patents/:id
+ * - 软件:GET/POST /api/software, GET/PUT/DELETE /api/software/:id
  * - 论坛:GET/POST /api/forum/topics, GET /api/forum/topics/:slug,
  *        POST /api/forum/topics/:slug/replies,
  *        DELETE /api/forum/topics/:slug
@@ -16,6 +19,9 @@
  *        GET /api/tags/:tag/projects
  * - 搜索:GET /api/search?q=关键词
  * - 统计:GET /api/stats
+ * - 报告:GET /api/reports/daily, GET /api/reports/daily/:date,
+ *        GET /api/reports/weekly, GET /api/reports/weekly/:week,
+ *        GET /api/reports/monthly, GET /api/reports/monthly/:month
  * - 监控:GET /api/health
  */
 const express = require("express");
@@ -25,10 +31,14 @@ const authRoutes = require("./routes/auth");
 const articleRoutes = require("./routes/articles");
 const bookRoutes = require("./routes/books");
 const projectRoutes = require("./routes/projects");
+const paperRoutes = require("./routes/papers");
+const patentRoutes = require("./routes/patents");
+const softwareRoutes = require("./routes/software");
 const forumRoutes = require("./routes/forum");
 const tagRoutes = require("./routes/tags");
 const searchRoutes = require("./routes/search");
 const statsRoutes = require("./routes/stats");
+const reportRoutes = require("./routes/reports");
 
 const app = express();
 
@@ -52,10 +62,14 @@ app.use("/api/auth", authRoutes);
 app.use("/api/articles", articleRoutes);
 app.use("/api/books", bookRoutes);
 app.use("/api/projects", projectRoutes);
+app.use("/api/papers", paperRoutes);
+app.use("/api/patents", patentRoutes);
+app.use("/api/software", softwareRoutes);
 app.use("/api/forum", forumRoutes);
 app.use("/api/tags", tagRoutes);
 app.use("/api/search", searchRoutes);
 app.use("/api/stats", statsRoutes);
+app.use("/api/reports", reportRoutes);
 
 // 404 处理
 app.use((req, res) => {

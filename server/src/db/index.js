@@ -17,6 +17,8 @@ const DB_PATH = path.join(__dirname, "..", "..", "data", "db.json");
 // 默认数据结构:各业务集合及自增 ID 指针
 // articles 每条记录含 tags 字段(字符串数组),旧数据无该字段时读取时补为 []
 // article_likes 记录点赞 IP,用于防重复点赞限流
+// daily_reports / weekly_reports / monthly_reports 为日报/周报/月报集合
+// papers / patents / software 为论文/专利/软件作品集合
 const DEFAULT_DATA = {
     users: [],
     articles: [],
@@ -25,6 +27,12 @@ const DEFAULT_DATA = {
     forum_topics: [],
     forum_replies: [],
     article_likes: [],
+    daily_reports: [],
+    weekly_reports: [],
+    monthly_reports: [],
+    papers: [],
+    patents: [],
+    software: [],
     nextUserId: 1,
     nextArticleId: 1,
     nextBookId: 1,
@@ -32,6 +40,12 @@ const DEFAULT_DATA = {
     nextTopicId: 1,
     nextReplyId: 1,
     nextArticleLikeId: 1,
+    nextDailyReportId: 1,
+    nextWeeklyReportId: 1,
+    nextMonthlyReportId: 1,
+    nextPaperId: 1,
+    nextPatentId: 1,
+    nextSoftwareId: 1,
 };
 
 let state = null;

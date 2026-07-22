@@ -1,6 +1,6 @@
 /**
  * 全站搜索路由模块
- * 提供对文章、书籍、项目、论坛主题的统一关键词搜索
+ * 提供对文章、书籍、项目、论坛主题、论文、专利、软件作品的统一关键词搜索
  * 所有路由前缀:/api/search
  *
  * 搜索字段:
@@ -53,13 +53,14 @@ function buildSnippet(text, index) {
 /**
  * 构造单个搜索结果项
  * 依次检查传入字段,首个命中字段即生成结果
- * @param {string} type - 结果类型(article/book/project/topic)
+ * @param {string} type - 结果类型(article/book/project/topic/paper/patent/software)
  * @param {Object} item - 原始记录
  * @param {string} keyword - 关键词(已转小写)
  * @param {Array<string>} fields - 参与匹配的字段名
+ * @param {string} titleField - 用于结果标题的字段名(默认 "title")
  * @returns {Object|null} 命中则返回结果项,未命中返回 null
  */
-function buildResult(type, item, keyword, fields) {
+function buildResult(type, item, keyword, fields, titleField = "title") {
     for (const field of fields) {
         const value = item[field];
         const idx = findMatchIndex(value, keyword);
@@ -67,7 +68,7 @@ function buildResult(type, item, keyword, fields) {
             return {
                 type,
                 id: item.id,
-                title: item.title,
+                title: item[titleField],
                 slug: item.slug || "",
                 snippet: buildSnippet(value, idx),
             };
@@ -134,6 +135,40 @@ router.get("/", (req, res) => {
             if (r) all.push(r);
         });
 
+        // 论文:搜索 title/abstract/authors/journal
+        db.papers.forEach((p) => {
+            const r = buildResult("paper", p, keyword, [
+                "title",
+                "abstract",
+                "authors",
+                "journal",
+            ]);
+            if (r) all.push(r);
+        });
+
+        // 专利:搜索 title/abstract/inventors/patent_number
+        db.patents.forEach((p) => {
+            const r = buildResult("patent", p, keyword, [
+                "title",
+                "abstract",
+                "inventors",
+                "patent_number",
+            ]);
+            if (r) all.push(r);
+        });
+
+        // 软件作品:搜索 name/description/tech_stack
+        db.software.forEach((s) => {
+            const r = buildResult(
+                "software",
+                s,
+                keyword,
+                ["name", "description", "tech_stack"],
+                "name"
+            );
+            if (r) all.push(r);
+        });
+
         // 总数不超过 50:截取后按类型分类
         const capped = all.slice(0, MAX_RESULTS);
         const result = {
@@ -141,6 +176,9 @@ router.get("/", (req, res) => {
             books: [],
             projects: [],
             topics: [],
+            papers: [],
+            patents: [],
+            software: [],
             total: capped.length,
         };
         capped.forEach((item) => {
@@ -148,6 +186,9 @@ router.get("/", (req, res) => {
             else if (item.type === "book") result.books.push(item);
             else if (item.type === "project") result.projects.push(item);
             else if (item.type === "topic") result.topics.push(item);
+            else if (item.type === "paper") result.papers.push(item);
+            else if (item.type === "patent") result.patents.push(item);
+            else if (item.type === "software") result.software.push(item);
         });
 
         return res.json(result);

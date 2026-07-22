@@ -1,42 +1,73 @@
-# BruceTang
+<!-- Hero 区：个人定位语 + 身份标签，对标 lixiaolai.com 的编辑型首页 -->
+<div class="bt-hero">
+    <div class="bt-hero-title">A developer <em>exploring</em> the world through code.</div>
+    <div class="bt-hero-sub">BruceTang · developer, researcher, lifelong learner</div>
+    <div class="bt-hero-tags">
+        <span>杭州 · 杭州</span>
+        <span>全栈开发</span>
+        <span>量化交易</span>
+        <span>核工程</span>
+    </div>
+</div>
 
-> developer, researcher, lifelong learner —— 用代码探索世界，用工程理解万物
+<!-- Currently 滚动条：实时状态展示 -->
+<div class="bt-currently">
+    <div class="bt-currently-track">
+        <span><strong>CURRENTLY</strong> · 正在开发个人博客系统</span>
+        <span>· 已完成 <strong>192</strong> 个测试</span>
+        <span>· 代码覆盖率 <strong>94.96%</strong></span>
+        <span>· GitHub 活跃：<strong>HaoTang9878</strong></span>
+        <span>· 正在读：《重构》《代码整洁之道》</span>
+        <span>· 技术栈：<strong>Node.js / Python / TypeScript</strong></span>
+        <span>· 正在开发：<strong>OpenAlpha</strong> 量化交易系统</span>
+        <span>· 备案中：<strong>brucetanghao.com</strong></span>
+        <span><strong>CURRENTLY</strong> · 正在开发个人博客系统</span>
+        <span>· 已完成 <strong>192</strong> 个测试</span>
+        <span>· 代码覆盖率 <strong>94.96%</strong></span>
+        <span>· GitHub 活跃：<strong>HaoTang9878</strong></span>
+        <span>· 正在读：《重构》《代码整洁之道》</span>
+        <span>· 技术栈：<strong>Node.js / Python / TypeScript</strong></span>
+        <span>· 正在开发：<strong>OpenAlpha</strong> 量化交易系统</span>
+        <span>· 备案中：<strong>brucetanghao.com</strong></span>
+    </div>
+</div>
 
-欢迎来到我的个人作品集。这里收集了我写过的文字、做过的项目、读过的书籍，以及学习过程中的笔记和思考。右上角可以切换主题色，祝浏览愉快。
+<!-- § 01 · 文章 -->
+<div class="bt-section-head">
+    <h2><span class="bt-section-num">§ 01</span> · 文章 <em style="font-family:var(--bt-font-serif);font-weight:400;font-size:0.8em;color:#888;"> — 最新思考与笔记</em></h2>
+    <a class="bt-section-all" href="#/articles/programming/">查看全部 →</a>
+</div>
 
----
-
-## 快速导航
-
-<div class="home-nav">
-    <a class="home-nav-item" href="#/articles/programming/">
-        <span class="home-nav-icon">✍️</span>
-        <span class="home-nav-label">文章</span>
+<div class="bt-article-grid">
+    <a class="bt-article-card" href="#/articles/programming/notes.md">
+        <h3>编程学习笔记</h3>
+        <div class="bt-card-meta">TypeScript · Python · Git</div>
+        <p>编程语言、框架、工具的学习记录，包含 TypeScript 类型系统、Python 数据处理、Git 工作流等实战笔记。</p>
     </a>
-    <a class="home-nav-item" href="#/books">
-        <span class="home-nav-icon">📚</span>
-        <span class="home-nav-label">书籍</span>
+    <a class="bt-article-card" href="#/articles/ops/">
+        <h3>服务器运维手记</h3>
+        <div class="bt-card-meta">Linux · Nginx · Docker</div>
+        <p>Linux 系统管理、Nginx 反向代理配置、Docker 容器化部署、故障排查等运维实战经验。</p>
     </a>
-    <a class="home-nav-item" href="#/projects">
-        <span class="home-nav-icon">📦</span>
-        <span class="home-nav-label">项目</span>
+    <a class="bt-article-card" href="#/articles/database/">
+        <h3>数据库实践</h3>
+        <div class="bt-card-meta">MySQL · Redis</div>
+        <p>MySQL 索引优化、查询性能调优、Redis 缓存策略、数据库设计原则等实践经验。</p>
     </a>
-    <a class="home-nav-item" href="#/forum">
-        <span class="home-nav-icon">💬</span>
-        <span class="home-nav-label">论坛</span>
-    </a>
-    <a class="home-nav-item" href="#/github">
-        <span class="home-nav-icon">🔥</span>
-        <span class="home-nav-label">GitHub 活跃</span>
+    <a class="bt-article-card" href="#/articles/reading/notes.md">
+        <h3>读书笔记</h3>
+        <div class="bt-card-meta">重构 · 代码整洁 · CSAPP</div>
+        <p>《重构》《代码整洁之道》《深入理解计算机系统》等经典技术书籍的读后感与思考总结。</p>
     </a>
 </div>
 
----
-
-## 精选项目
+<!-- § 02 · 项目 -->
+<div class="bt-section-head">
+    <h2><span class="bt-section-num">§ 02</span> · 项目 <em style="font-family:var(--bt-font-serif);font-weight:400;font-size:0.8em;color:#888;"> — 正在构建的东西</em></h2>
+    <a class="bt-section-all" href="#/projects">查看全部 →</a>
+</div>
 
 <div class="home-proj-grid">
-    <!-- 精选卡片：OpenDDOS · 原创项目 · 安全研究 -->
     <a class="home-proj-card" href="https://github.com/HaoTang9878/OpenDDOS"
        target="_blank" rel="noopener" data-repo="OpenDDOS">
         <div class="home-proj-head">
@@ -49,8 +80,6 @@
             <span class="home-proj-lang" style="color:#6c757d;background:#f0f0f0">原创项目</span>
         </div>
     </a>
-
-    <!-- 精选卡片：point_reactor · 学术研究 · 核工程 -->
     <a class="home-proj-card" href="https://github.com/HaoTang9878/point_reactor"
        target="_blank" rel="noopener" data-repo="point_reactor">
         <div class="home-proj-head">
@@ -63,8 +92,6 @@
             <span class="home-proj-lang" style="color:#6c757d;background:#f0f0f0">学术研究</span>
         </div>
     </a>
-
-    <!-- 精选卡片：strategies · AI 与量化 -->
     <a class="home-proj-card" href="https://github.com/HaoTang9878/strategies"
        target="_blank" rel="noopener" data-repo="strategies">
         <div class="home-proj-head">
@@ -79,56 +106,65 @@
     </a>
 </div>
 
-> 查看全部项目请访问 [项目页](#/projects) 或
-> [GitHub 主页](https://github.com/HaoTang9878)。
+<!-- § 03 · 书籍 -->
+<div class="bt-section-head">
+    <h2><span class="bt-section-num">§ 03</span> · 书籍 <em style="font-family:var(--bt-font-serif);font-weight:400;font-size:0.8em;color:#888;"> — 读过的文字</em></h2>
+    <a class="bt-section-all" href="#/books">查看全部 →</a>
+</div>
+
+<div class="bt-article-grid">
+    <a class="bt-article-card" href="#/books">
+        <h3>技术书籍</h3>
+        <div class="bt-card-meta">4 本</div>
+        <p>《重构》《代码整洁之道》《深入理解计算机系统》《Designing Data-Intensive Applications》</p>
+    </a>
+    <a class="bt-article-card" href="#/books">
+        <h3>商业书籍</h3>
+        <div class="bt-card-meta">3 本</div>
+        <p>《精益创业》《从0到1》《原则》—— 创业与决策方法论。</p>
+    </a>
+    <a class="bt-article-card" href="#/books">
+        <h3>文学书籍</h3>
+        <div class="bt-card-meta">3 本</div>
+        <p>《活着》《三体》《月亮与六便士》—— 在代码之外的世界。</p>
+    </a>
+</div>
+
+<!-- § 04 · 更多 -->
+<div class="bt-section-head">
+    <h2><span class="bt-section-num">§ 04</span> · 更多 <em style="font-family:var(--bt-font-serif);font-weight:400;font-size:0.8em;color:#888;"> — 探索与连接</em></h2>
+</div>
+
+<div class="home-nav">
+    <a class="home-nav-item" href="#/daily">
+        <span class="home-nav-icon">📋</span>
+        <span class="home-nav-label">日报</span>
+    </a>
+    <a class="home-nav-item" href="#/forum">
+        <span class="home-nav-icon">💬</span>
+        <span class="home-nav-label">讨论区</span>
+    </a>
+    <a class="home-nav-item" href="#/github">
+        <span class="home-nav-icon">🔥</span>
+        <span class="home-nav-label">GitHub 活跃</span>
+    </a>
+    <a class="home-nav-item" href="#/resume">
+        <span class="home-nav-icon">📄</span>
+        <span class="home-nav-label">简历</span>
+    </a>
+    <a class="home-nav-item" href="#/timeline">
+        <span class="home-nav-icon">⏱️</span>
+        <span class="home-nav-label">时间线</span>
+    </a>
+    <a class="home-nav-item" href="#/about/">
+        <span class="home-nav-icon">👤</span>
+        <span class="home-nav-label">关于我</span>
+    </a>
+</div>
 
 ---
 
-## 文字作品
-
-### 技术文章
-
-- [编程学习笔记](#/articles/programming/) —— 编程语言、框架、工具的学习记录
-- [服务器运维手记](#/articles/ops/) —— Linux、Docker、Nginx 等运维实战
-- [数据库实践](#/articles/database/) —— MySQL、Redis 等数据库使用心得
-
-### 思考与随笔
-
-- [读书笔记](#/articles/reading/) —— 读书后的思考与总结
-- [生活随笔](#/articles/life/) —— 日常生活的点滴记录
-
----
-
-## 作品展示
-
-- [书籍](#/books) —— 技术书籍、商业书籍、文学书籍的阅读与书评
-- [开源项目](#/projects) —— 个人开源项目与社区贡献
-- [讨论区](#/forum) —— 技术交流与思想碰撞
-
----
-
-## GitHub 活跃
-
-- [GitHub 活跃记录](#/github) —— 贡献热力图、最近活动、用户信息
-
----
-
-## 项目作品
-
-- [OpenAlpha](#/projects/openalpha/) —— 开放式的工程脚手架与最佳实践模板
-- [个人博客系统](#/projects/blog/) —— 基于 docsify 搭建的个人作品集
-
----
-
-## 关于我
-
-- [个人简介](#/about/) —— 介绍我自己
-- [联系方式](#/about/#联系方式) —— 如何联系我
-
----
-
-> 这个网站使用 [docsify](https://docsify.js.org/) 构建，代码托管在
-> [GitHub](https://github.com/HaoTang9878/tanghao) 上。
+> Set in Newsreader & Inter. 使用 [docsify](https://docsify.js.org/) 构建，代码托管在 [GitHub](https://github.com/HaoTang9878/tanghao)。
 
 <style>
 /* ====== 首页快速导航：横向卡片入口 ====== */

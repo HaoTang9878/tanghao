@@ -1,0 +1,577 @@
+/**
+ * BruceTang 作品集 - 自定义样式表
+ *
+ * 模块说明：
+ *   本文件由 index.html 的 <style> 标签提取而来，集中管理站点全部自定义样式。
+ *   主要包含：主题色变量、暗色模式适配、用户状态条、主题选择器、阅读进度条、
+ *   回到顶部按钮、加载动画、社交分享按钮、文章阅读时间、响应式布局、打印样式，
+ *   以及重构后新增的页面过渡动画、主题切换平滑过渡、键盘快捷键提示。
+ *   docsify 自身的主题样式仍由 CDN 的 vue.css 提供，本文件在其之上做覆盖增强。
+ */
+
+/* 主题色变量（由 JS 动态注入 :root 变量，此处为默认值，避免样式闪烁） */
+:root {
+    --bt-theme-color: #42b983;
+    --bt-bg-gradient: linear-gradient(135deg, #f0f9f4 0%, #e3f5eb 100%);
+    --bt-text-color: #34495e;
+    --bt-sidebar-bg: #fff;
+    --bt-content-bg: #fff;
+    --bt-border-color: #eee;
+}
+
+/* 应用主题渐变背景到 body */
+body {
+    background: var(--bt-bg-gradient);
+    transition: background 0.4s ease, color 0.4s ease;
+    color: var(--bt-text-color);
+}
+
+/* ====== 页面过渡动画：docsify 内容切换时淡入 ====== */
+@keyframes bt-fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+/* 内容区淡入动画，每次路由切换由 app.js 重新触发 */
+.markdown-section {
+    animation: bt-fadeIn 0.3s ease;
+}
+
+/* ====== 主题切换平滑过渡：内容区/侧边栏/代码块颜色与背景平滑变化 ====== */
+.content,
+.sidebar,
+.markdown-section,
+.content pre,
+.content code,
+.content blockquote {
+    transition: background 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+}
+
+/* 暗色模式：覆盖 docsify 内容区、侧边栏、代码块的背景与字体 */
+body.bt-dark-mode .sidebar {
+    background: var(--bt-sidebar-bg) !important;
+    color: var(--bt-text-color) !important;
+}
+body.bt-dark-mode .sidebar a,
+body.bt-dark-mode .sidebar h2,
+body.bt-dark-mode .sidebar p {
+    color: var(--bt-text-color) !important;
+}
+body.bt-dark-mode .content {
+    background: var(--bt-content-bg) !important;
+    color: var(--bt-text-color) !important;
+}
+body.bt-dark-mode .content h1,
+body.bt-dark-mode .content h2,
+body.bt-dark-mode .content h3,
+body.bt-dark-mode .content p,
+body.bt-dark-mode .content li,
+body.bt-dark-mode .content td,
+body.bt-dark-mode .content th {
+    color: var(--bt-text-color) !important;
+}
+body.bt-dark-mode .content pre,
+body.bt-dark-mode .content code {
+    background: rgba(255,255,255,0.08) !important;
+    color: var(--bt-text-color) !important;
+}
+body.bt-dark-mode .content blockquote {
+    border-left-color: var(--bt-theme-color) !important;
+    color: var(--bt-text-color) !important;
+}
+body.bt-dark-mode .markdown-section a {
+    color: var(--bt-theme-color) !important;
+}
+
+/* 顶部右侧用户状态条 */
+.user-nav {
+    position: fixed;
+    top: 16px;
+    right: 80px;
+    z-index: 100;
+    font-size: 14px;
+}
+.user-nav a {
+    color: var(--bt-theme-color);
+    text-decoration: none;
+    margin-left: 12px;
+    transition: opacity 0.2s ease;
+}
+.user-nav a:hover {
+    text-decoration: underline;
+    opacity: 0.75;
+}
+.user-nav .username {
+    color: #6c757d;
+    margin-right: 8px;
+}
+/* GitHub 图标链接样式 */
+.user-nav .gh-link {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 12px;
+    vertical-align: middle;
+}
+.user-nav .gh-link svg {
+    width: 18px;
+    height: 18px;
+    fill: var(--bt-theme-color);
+    transition: opacity 0.2s ease;
+}
+.user-nav .gh-link:hover svg {
+    opacity: 0.75;
+}
+
+/* ====== 主题选择器：浮动按钮 + 展开面板 ====== */
+.theme-picker {
+    position: fixed;
+    top: 16px;
+    right: 24px;
+    z-index: 200;
+}
+.theme-picker-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    background: var(--bt-theme-color);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.theme-picker-btn:hover {
+    transform: rotate(15deg);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.theme-picker-btn svg {
+    width: 22px;
+    height: 22px;
+    fill: #fff;
+}
+/* 主题面板（默认隐藏，点击按钮后展开） */
+.theme-panel {
+    position: absolute;
+    top: 52px;
+    right: 0;
+    width: 200px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    padding: 12px;
+    display: none;
+}
+.theme-panel.open {
+    display: block;
+}
+.theme-panel-title {
+    font-size: 13px;
+    color: #6c757d;
+    margin: 0 0 10px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+}
+.theme-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.theme-list li {
+    display: flex;
+    align-items: center;
+    padding: 8px 6px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.15s;
+}
+.theme-list li:hover {
+    background: #f5f5f5;
+}
+.theme-list li.active {
+    background: #f0f0f0;
+    font-weight: 600;
+}
+.theme-swatch {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-right: 10px;
+    border: 1px solid rgba(0,0,0,0.1);
+}
+/* 跟随系统主题：半黑半月图标，替代纯色色块 */
+.theme-swatch-system {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.theme-swatch-system svg {
+    width: 20px;
+    height: 20px;
+}
+.theme-name {
+    font-size: 14px;
+    color: #333;
+}
+
+/* ====== 阅读进度条：固定页面顶部，宽度随阅读进度变化 ====== */
+.bt-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    width: 0%;
+    background: var(--bt-theme-color);
+    z-index: 300;
+    transition: width 0.1s ease-out;
+}
+
+/* ====== 回到顶部按钮：固定右下角，滚动超阈值后淡入 ====== */
+.bt-backtop {
+    position: fixed;
+    right: 28px;
+    bottom: 32px;
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 50%;
+    background: var(--bt-theme-color);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(12px);
+    transition: opacity 0.3s ease, transform 0.3s ease,
+                visibility 0.3s, box-shadow 0.2s ease;
+    z-index: 150;
+}
+.bt-backtop.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+.bt-backtop:hover {
+    box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+}
+.bt-backtop svg {
+    width: 22px;
+    height: 22px;
+    fill: #fff;
+}
+
+/* ====== 加载动画：居中旋转圆环，docsify 渲染完成后隐藏 ====== */
+.bt-loader {
+    position: fixed;
+    inset: 0;
+    z-index: 400;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bt-bg-gradient);
+    transition: opacity 0.4s ease;
+}
+.bt-loader.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+.bt-loader-ring {
+    width: 48px;
+    height: 48px;
+    border: 4px solid rgba(0,0,0,0.1);
+    border-top-color: var(--bt-theme-color);
+    border-radius: 50%;
+    animation: bt-spin 0.8s linear infinite;
+}
+@keyframes bt-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ====== 主题面板暗色模式适配 ====== */
+body.bt-dark-mode .theme-panel {
+    background: #1a1a2e;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+body.bt-dark-mode .theme-panel-title {
+    color: #9aa0b4;
+    border-bottom-color: #2a2a4a;
+}
+body.bt-dark-mode .theme-list li:hover {
+    background: rgba(255,255,255,0.08);
+}
+body.bt-dark-mode .theme-list li.active {
+    background: rgba(255,255,255,0.12);
+}
+body.bt-dark-mode .theme-name {
+    color: #e0e0e0;
+}
+
+/* ====== 用户状态条暗色适配 + 加载动画暗色适配 ====== */
+body.bt-dark-mode .user-nav .username {
+    color: #9aa0b4;
+}
+body.bt-dark-mode .bt-loader-ring {
+    border-color: rgba(255,255,255,0.12);
+    border-top-color: var(--bt-theme-color);
+}
+
+/* ====== 文章阅读时间：标题下方灰色小字 ====== */
+.bt-reading-time {
+    font-size: 13px;
+    color: #999;
+    margin: -8px 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.bt-reading-time svg {
+    width: 14px;
+    height: 14px;
+    fill: #999;
+}
+body.bt-dark-mode .bt-reading-time {
+    color: #888;
+}
+body.bt-dark-mode .bt-reading-time svg {
+    fill: #888;
+}
+
+/* ====== 社交分享按钮：浮动在文章右侧 ====== */
+.bt-share {
+    position: fixed;
+    right: 28px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 120;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+.bt-share.show {
+    opacity: 1;
+    visibility: visible;
+}
+.bt-share-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease,
+                background 0.2s ease;
+}
+.bt-share-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.bt-share-btn svg {
+    width: 20px;
+    height: 20px;
+}
+/* Twitter/X 图标颜色 */
+.bt-share-twitter svg {
+    fill: #1da1f2;
+}
+/* LinkedIn 图标颜色 */
+.bt-share-linkedin svg {
+    fill: #0077b5;
+}
+/* 复制链接按钮使用主题色 */
+.bt-share-copy svg {
+    fill: var(--bt-theme-color);
+}
+/* 复制成功反馈提示 */
+.bt-share-tip {
+    position: absolute;
+    right: 52px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--bt-theme-color);
+    color: #fff;
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+.bt-share-tip.show {
+    opacity: 1;
+}
+/* 暗色模式适配：按钮背景改为深色 */
+body.bt-dark-mode .bt-share-btn {
+    background: #1a1a2e;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+/* ====== 键盘快捷键提示：固定底部居中，半透明，悬停加深 ====== */
+.bt-shortcuts-hint {
+    position: fixed;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 90;
+    font-size: 12px;
+    color: #888;
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    padding: 4px 12px;
+    border-radius: 12px;
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    white-space: nowrap;
+    user-select: none;
+}
+.bt-shortcuts-hint:hover {
+    opacity: 1;
+}
+.bt-shortcuts-hint kbd {
+    background: #eee;
+    color: #444;
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-family: monospace;
+    margin: 0 1px;
+    font-size: 11px;
+}
+/* 暗色模式适配：快捷键提示 */
+body.bt-dark-mode .bt-shortcuts-hint {
+    background: rgba(26,26,46,0.7);
+    color: #9aa0b4;
+}
+body.bt-dark-mode .bt-shortcuts-hint kbd {
+    background: #2a2a4a;
+    color: #e0e0e0;
+}
+
+/* ====== 响应式设计：平板 ====== */
+@media (max-width: 1024px) {
+    .markdown-section {
+        max-width: 90% !important;
+    }
+}
+
+/* ====== 响应式设计：移动端 ====== */
+@media (max-width: 768px) {
+    .user-nav {
+        right: 64px;
+        font-size: 12px;
+    }
+    .user-nav a {
+        margin-left: 8px;
+    }
+    .theme-picker-btn {
+        width: 36px;
+        height: 36px;
+    }
+    .theme-picker-btn svg {
+        width: 18px;
+        height: 18px;
+    }
+    .theme-panel {
+        width: 180px;
+    }
+    .markdown-section {
+        max-width: 95% !important;
+        padding: 16px !important;
+    }
+    /* docsify 侧边栏在移动端可折叠为抽屉 */
+    body.close .sidebar {
+        transform: translateX(-100%);
+    }
+    .sidebar-toggle {
+        display: block !important;
+    }
+    /* 移动端隐藏浮动分享按钮，避免遮挡内容 */
+    .bt-share {
+        display: none !important;
+    }
+    /* 移动端隐藏快捷键提示（移动端无键盘交互） */
+    .bt-shortcuts-hint {
+        display: none !important;
+    }
+}
+
+/* ====== 打印友好样式：隐藏导航元素，内容全宽 ====== */
+@media print {
+    /* 隐藏侧边栏、主题选择器、用户状态条、回到顶部、进度条、分享按钮、加载动画、快捷键提示 */
+    .sidebar,
+    .sidebar-toggle,
+    .theme-picker,
+    .user-nav,
+    .bt-backtop,
+    .bt-progress,
+    .bt-share,
+    .bt-loader,
+    .bt-shortcuts-hint {
+        display: none !important;
+    }
+    /* 内容区全宽显示，去除最大宽度限制 */
+    .content,
+    .markdown-section {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    /* 字体改为黑色，背景纯白 */
+    body {
+        background: #fff !important;
+        color: #000 !important;
+    }
+    .content,
+    .markdown-section {
+        background: #fff !important;
+        color: #000 !important;
+    }
+    /* 标题与正文统一黑色 */
+    .content h1,
+    .content h2,
+    .content h3,
+    .content h4,
+    .content h5,
+    .content h6,
+    .content p,
+    .content li,
+    .content td,
+    .content th,
+    .content blockquote {
+        color: #000 !important;
+    }
+    /* 链接显示 URL，方便打印后查阅 */
+    .content a::after {
+        content: " (" attr(href) ")";
+        font-size: 90%;
+        color: #555;
+    }
+    /* 代码块保留边框但去掉背景色 */
+    .content pre {
+        border: 1px solid #ccc !important;
+        background: transparent !important;
+        color: #000 !important;
+    }
+    .content code {
+        background: transparent !important;
+        color: #000 !important;
+    }
+    .content pre code {
+        color: #000 !important;
+    }
+}

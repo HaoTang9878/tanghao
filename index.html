@@ -25,10 +25,14 @@
     <meta name="twitter:title" content="BruceTang的作品集">
     <meta name="twitter:description" content="BruceTang的个人作品集 - 记录所学、所思、所做">
     <meta name="twitter:image" content="https://github.com/HaoTang9878.png">
+    <!-- 编辑型衬线字体：Newsreader（正文）+ Inter（UI/导航），对标 lixiaolai.com 排版 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
     <!-- docsify 核心样式和脚本 -->
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify-sidebar-collapse@1/dist/sidebar.min.css">
-    <!-- 自定义样式：用户状态条 / 主题选择器 / 响应式布局 -->
+    <!-- 自定义样式：用户状态条 / 主题选择器 / 编辑型排版 / 响应式布局 -->
     <style>
         /* 主题色变量（由 JS 动态注入 :root 变量） */
         :root {
@@ -38,12 +42,207 @@
             --bt-sidebar-bg: #fff;
             --bt-content-bg: #fff;
             --bt-border-color: #eee;
+            /* 编辑型字体变量：正文用衬线、UI 用无衬线 */
+            --bt-font-serif: 'Newsreader', Georgia, 'Noto Serif SC', serif;
+            --bt-font-sans: 'Inter', system-ui, -apple-system, sans-serif;
         }
         /* 应用主题渐变背景到 body */
         body {
             background: var(--bt-bg-gradient);
             transition: background 0.4s ease, color 0.4s ease;
             color: var(--bt-text-color);
+            font-family: var(--bt-font-sans);
+        }
+        /* 编辑型排版：正文用衬线字体，标题/导航保持无衬线 */
+        .markdown-section {
+            font-family: var(--bt-font-serif);
+            font-size: 17px;
+            line-height: 1.8;
+            letter-spacing: 0.01em;
+        }
+        .markdown-section h1,
+        .markdown-section h2,
+        .markdown-section h3,
+        .markdown-section h4,
+        .markdown-section h5,
+        .markdown-section h6 {
+            font-family: var(--bt-font-sans);
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+        .markdown-section h1 {
+            font-size: 2.2em;
+            margin-bottom: 0.4em;
+        }
+        .markdown-section h2 {
+            font-size: 1.6em;
+            margin-top: 2em;
+            margin-bottom: 0.6em;
+            border-bottom: 1px solid var(--bt-border-color);
+            padding-bottom: 0.3em;
+        }
+        .markdown-section p {
+            margin-bottom: 1.2em;
+        }
+        .markdown-section blockquote p {
+            font-family: var(--bt-font-serif);
+            font-style: italic;
+            font-size: 1.05em;
+        }
+        /* 侧边栏用无衬线 */
+        .sidebar,
+        .sidebar a,
+        .sidebar h2,
+        .sidebar p {
+            font-family: var(--bt-font-sans);
+        }
+        /* Hero 区样式：首页大标题 + 身份描述 */
+        .bt-hero {
+            text-align: center;
+            padding: 40px 0 30px;
+            border-bottom: 1px solid var(--bt-border-color);
+            margin-bottom: 30px;
+        }
+        .bt-hero-title {
+            font-family: var(--bt-font-serif);
+            font-size: 2.8em;
+            font-weight: 500;
+            line-height: 1.2;
+            margin: 0 0 10px;
+            color: var(--bt-text-color);
+        }
+        .bt-hero-title em {
+            font-style: italic;
+            color: var(--bt-theme-color);
+            font-weight: 500;
+        }
+        .bt-hero-sub {
+            font-family: var(--bt-font-sans);
+            font-size: 1.1em;
+            color: #888;
+            margin: 8px 0 16px;
+        }
+        .bt-hero-tags {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+        .bt-hero-tags span {
+            font-family: var(--bt-font-sans);
+            font-size: 13px;
+            color: var(--bt-theme-color);
+            border: 1px solid var(--bt-theme-color);
+            border-radius: 20px;
+            padding: 3px 14px;
+        }
+        /* 编号分区标题：§ 01 · 文章 */
+        .bt-section-head {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin: 2.5em 0 1em;
+            padding-bottom: 0.5em;
+            border-bottom: 2px solid var(--bt-theme-color);
+        }
+        .bt-section-head h2 {
+            font-family: var(--bt-font-sans);
+            font-size: 1.4em;
+            font-weight: 600;
+            margin: 0;
+            border: none;
+            padding: 0;
+        }
+        .bt-section-head .bt-section-num {
+            font-family: var(--bt-font-serif);
+            font-style: italic;
+            color: var(--bt-theme-color);
+            margin-right: 8px;
+        }
+        .bt-section-head .bt-section-all {
+            font-family: var(--bt-font-sans);
+            font-size: 14px;
+            color: var(--bt-theme-color);
+            text-decoration: none;
+        }
+        .bt-section-head .bt-section-all:hover {
+            text-decoration: underline;
+        }
+        /* Currently 滚动条：实时状态展示 */
+        .bt-currently {
+            overflow: hidden;
+            white-space: nowrap;
+            border-top: 1px solid var(--bt-border-color);
+            border-bottom: 1px solid var(--bt-border-color);
+            padding: 10px 0;
+            margin: 0 0 30px;
+            font-family: var(--bt-font-sans);
+            font-size: 13px;
+            color: #888;
+        }
+        .bt-currently-track {
+            display: inline-block;
+            animation: bt-marquee 30s linear infinite;
+        }
+        .bt-currently-track span {
+            margin: 0 30px;
+        }
+        .bt-currently-track strong {
+            color: var(--bt-theme-color);
+        }
+        @keyframes bt-marquee {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+        /* 文章卡片网格 */
+        .bt-article-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .bt-article-card {
+            border: 1px solid var(--bt-border-color);
+            border-radius: 8px;
+            padding: 20px;
+            transition: box-shadow 0.2s ease, transform 0.2s ease;
+            background: var(--bt-content-bg);
+        }
+        .bt-article-card:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+        }
+        .bt-article-card h3 {
+            font-family: var(--bt-font-sans);
+            font-size: 1.1em;
+            margin: 0 0 8px;
+        }
+        .bt-article-card .bt-card-meta {
+            font-family: var(--bt-font-sans);
+            font-size: 12px;
+            color: #aaa;
+            margin-bottom: 8px;
+        }
+        .bt-article-card p {
+            font-family: var(--bt-font-serif);
+            font-size: 0.95em;
+            line-height: 1.6;
+            margin: 0;
+        }
+        /* 暗色模式适配新样式 */
+        body.bt-dark-mode .bt-hero-title { color: var(--bt-text-color); }
+        body.bt-dark-mode .bt-hero-sub { color: #9aa0b4; }
+        body.bt-dark-mode .bt-currently { color: #9aa0b4; border-color: var(--bt-border-color); }
+        body.bt-dark-mode .bt-article-card { border-color: var(--bt-border-color); }
+        body.bt-dark-mode .bt-article-card .bt-card-meta { color: #777; }
+        body.bt-dark-mode .bt-section-head { border-bottom-color: var(--bt-theme-color); }
+        /* 响应式：移动端缩小 Hero */
+        @media (max-width: 768px) {
+            .bt-hero-title { font-size: 2em; }
+            .bt-hero-sub { font-size: 1em; }
+            .bt-article-grid { grid-template-columns: 1fr; }
+            .markdown-section { font-size: 16px; }
         }
         /* 暗色模式：覆盖 docsify 内容区、侧边栏、代码块的背景与字体 */
         body.bt-dark-mode .sidebar {
